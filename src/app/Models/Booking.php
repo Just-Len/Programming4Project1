@@ -6,13 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
+    protected $table = 'booking';
+
+    protected $primaryKey='booking_id';
+
+    public $timestamps=false;
+
     protected $fillable = [
         'lodging_id',
         'customer_id',
         'status_id',
         'startDate',
-        'endDate',
+        'endDate'
     ];
+
     // Esto son relaciones dentro de la base de datos 
     
     public function lodging()
@@ -27,8 +34,8 @@ class Booking extends Model
     }
 
     
-    public function status()
+    public function BookingStatus()
     {
-        return $this->belongsTo(Status::class);
+        return $this->belongsTo(BookingStatus::class);
     }
 }
