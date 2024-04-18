@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,20 +20,20 @@ class Booking extends Model
         'endDate'
     ];
 
-    // Esto son relaciones dentro de la base de datos 
-    
+    // Esto son relaciones dentro de la base de datos
+
     public function lodging()
     {
         return $this->belongsTo(Lodging::class);
     }
 
-   
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);
     }
 
-    
+
     public function BookingStatus()
     {
         return $this->belongsTo(BookingStatus::class);
