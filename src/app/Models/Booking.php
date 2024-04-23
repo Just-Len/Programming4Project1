@@ -16,8 +16,8 @@ class Booking extends Model
         'lodging_id',
         'customer_id',
         'status_id',
-        'startDate',
-        'endDate'
+        'start_date',
+        'end_date'
     ];
 
     // Esto son relaciones dentro de la base de datos

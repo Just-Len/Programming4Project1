@@ -13,11 +13,11 @@ class Lessor extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'user_id',
-        'firstName',
-        'lastName',
-        'phoneNumber',
-        'emailAddress'
+        'username',
+        'first_name',
+        'last_name',
+        'phone_number',
+        'email_address'
     ];
 
     public function user()

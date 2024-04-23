@@ -17,8 +17,8 @@ class Lodging extends Model
         'name',
         'description',
         'address',
-        'perNightPrice',
-        'availableRooms'
+        'per_night_price',
+        'available_rooms'
     ];
 
     public function lessor(){

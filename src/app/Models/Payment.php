@@ -13,7 +13,7 @@ class Payment extends Model
     protected $fillable = [
         'booking_id',
         'date',
-        'totalAmount'
+        'total_amount'
     ];
 
     public function booking()

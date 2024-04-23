@@ -13,11 +13,11 @@ class Administrator extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'user_id',
+        'username',
         'first_name',
-        'lastName',
-        'phoneNumber',
-        'emailAddress'
+        'last_name',
+        'phone_number',
+        'email_address'
     ];
 
     public function user()
