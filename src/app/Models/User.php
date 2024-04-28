@@ -8,14 +8,15 @@ class User extends Authenticatable
 {
     protected $table = 'user';
 
-    protected $primaryKey = 'user_id';
+    protected $primaryKey = 'name';
     
     protected $timestamps = false;
 
     protected $fillable = [
-        'username',
+        'name',
         'role_id',
         'password',
+        'email_address'
     ];
 
     protected $hidden = [

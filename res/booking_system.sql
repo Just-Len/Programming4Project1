@@ -7,46 +7,58 @@ CREATE TABLE IF NOT EXISTS user_role (
   PRIMARY KEY (role_id),
   UNIQUE INDEX UNIQUE_type (type));
 
+CREATE TABLE IF NOT EXISTS user (
+  name VARCHAR(50) NOT NULL,
+  password CHAR(200) NOT NULL,
+  role_id INT UNSIGNED NOT NULL,
+  email_address VARCHAR(150) NOT NULL,
+  PRIMARY KEY (name),
+  INDEX FK_INDEX_user_role (role_id),
+  UNIQUE INDEX UNIQUE_email_address (email_address),
+  CONSTRAINT FK_user_user_role
+    FOREIGN KEY (role_id)
+    REFERENCES user_role (role_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
+
 CREATE TABLE IF NOT EXISTS customer (
   customer_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  user bigint(20) UNSIGNED NOT NULL,
+  user_name VARCHAR(50) NOT NULL,
   first_name VARCHAR(50) NOT NULL,
   last_name VARCHAR(100) NOT NULL,
   phone_number CHAR(25) NOT NULL,
-  email_address VARCHAR(150) NOT NULL,
   PRIMARY KEY (customer_id),
-  UNIQUE INDEX UNIQUE_user (user),
+  UNIQUE INDEX UNIQUE_user_name (user_name),
   CONSTRAINT FK_customer_user
-    FOREIGN KEY (user)
-    REFERENCES user (id)
+    FOREIGN KEY (user_name)
+    REFERENCES user (name)
 );
 
 CREATE TABLE IF NOT EXISTS lessor (
   lessor_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  user bigint(20) UNSIGNED NOT NULL,
+  user_name VARCHAR(50) NOT NULL,
   first_name VARCHAR(50) NOT NULL,
   last_name VARCHAR(100) NOT NULL,
   phone_number CHAR(25) NOT NULL,
-  email_address VARCHAR(150) NOT NULL,
   PRIMARY KEY (lessor_id),
-  UNIQUE INDEX UNIQUE_user (user),
+  UNIQUE INDEX UNIQUE_user_name (user_name),
   CONSTRAINT FK_lessor_user
-    FOREIGN KEY (user)
-    REFERENCES user (id)
+    FOREIGN KEY (user_name)
+    REFERENCES user (name)
 );
 
 CREATE TABLE IF NOT EXISTS administrator (
   administrator_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  user bigint(20) UNSIGNED NOT NULL,
+  user_name VARCHAR(50) NOT NULL,
   first_name VARCHAR(50) NOT NULL,
   last_name VARCHAR(100) NOT NULL,
   phone_number CHAR(25) NOT NULL,
-  email_address VARCHAR(150) NULL,
   PRIMARY KEY (administrator_id),
-  UNIQUE INDEX UNIQUE_user (user),
+  UNIQUE INDEX UNIQUE_user_name (user_name),
   CONSTRAINT FK_administrator_user
-    FOREIGN KEY (user)
-    REFERENCES user (id)
+    FOREIGN KEY (user_name)
+    REFERENCES user (name)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
