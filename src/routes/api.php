@@ -10,6 +10,10 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('bookings', BookingController::class);
-Route::apiResource('lessors', LessorController::class);
-Route::apiResource('lodgings', LodgingController::class);
+Route::prefix('v1')->group(
+    function(){
+        Route::resource('/booking',BookingController::class,['except'=>['create','edit']]);
+        Route::resource('/lessor',LessorController::class,['except'=>['create','edit']]);
+        Route::resource('/lodging',LodgingController::class,['except'=>['create','edit']]);
+    }
+);

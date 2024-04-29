@@ -10,7 +10,7 @@ class User extends Authenticatable
 
     protected $primaryKey = 'name';
     
-    protected $timestamps = false;
+    public $timestamps = false;
 
     protected $fillable = [
         'name',
