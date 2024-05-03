@@ -77,7 +77,7 @@ class LodgingController extends Controller
         return $response;
     }
 
-    public function destroy($id)
+    public function destroy($id = null)
     {
         if (isset($id)) {
             $deleted = Lodging::where('lodging_id', $id)->delete();

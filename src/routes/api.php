@@ -11,9 +11,13 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::prefix('v1')->group(
-    function(){
-        Route::resource('/booking',BookingController::class,['except'=>['create','edit']]);
-        Route::resource('/lessor',LessorController::class,['except'=>['create','edit']]);
-        Route::resource('/lodging',LodgingController::class,['except'=>['create','edit']]);
+    function () {
+        Route::apiResource('/booking', BookingController::class, ['except' => ['create', 'edit']]);
+        Route::apiResource('/lessor', LessorController::class, ['except' => ['create', 'edit']]);
+        Route::apiResource('/lodging', LodgingController::class, ['except' => ['create', 'edit']]);
+
+        Route::delete('/booking', [BookingController::class, 'destroy']);
+        Route::delete('/lessor', [LessorController::class, 'destroy']);
+        Route::delete('/lodging', [LodgingController::class, 'destroy']);
     }
 );

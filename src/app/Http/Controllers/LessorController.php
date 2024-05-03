@@ -80,7 +80,7 @@ class LessorController extends Controller
         return $response;
     }
 
-    public function destroy($id)
+    public function destroy($id = null)
     {
         if (isset($id)) {
             $deleted = Lessor::where('booking_id', $id)->delete();

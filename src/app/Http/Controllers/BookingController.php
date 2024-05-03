@@ -75,17 +75,19 @@ class BookingController extends Controller
         return $response;
     }
 
-    public function destroy($id)
+    public function destroy($id = null)
     {
         if (isset($id)) {
             $deleted = Booking::where('booking_id', $id)->delete();
             if ($deleted) {
                 $response = JsonResponses::ok('Reserva eliminada');
             } else {
-                $response = JsonResponses::badRequest('No se pudo eliminar el recurso, compruebe que exista');
+                $response = JsonResponses::badRequest(
+                    'No se pudo eliminar el recurso, compruebe que exista');
             }
         } else {
-            $response = JsonResponses::notAcceptable('Falta el identificador del recurso a eliminar');
+            $response = JsonResponses::notAcceptable(
+                'Falta el identificador del recurso a eliminar');
         }
         return $response;
     }
