@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Lessor;
 use Illuminate\Http\Request;
-use App\Utils\Responses;
+use App\Utils\JsonResponses;
 
 class LessorController extends Controller
 {
@@ -14,7 +14,7 @@ class LessorController extends Controller
     public function index()
     {
         $data=Lessor::all();
-        return Responses::ok(
+        return JsonResponses::ok(
             "Todos los registros de arrendadores",
             $data);
     }
@@ -43,20 +43,20 @@ class LessorController extends Controller
                 $lessor->phone_number=$data('phone_number');
                 $lessor->email_address=$data('email_address');
                 $lessor->save();
-                $response= Responses::created(
-                    'Arrendador creada',
+                $response= JsonResponses::created(
+                    'Arrendador creado',
                     'lessor',
                     $lessor
                 );
             } else {
-                $response = Responses::notAcceptable(
+                $response = JsonResponses::notAcceptable(
                     'Datos inválidos',
                     'errors',
                     $isValid->errors()
                 );
             }
         } else {
-            $response = Responses::badRequest('No se encontró el objeto data');
+            $response = JsonResponses::badRequest('No se encontró el objeto data');
         }
 
         return $response;
@@ -66,13 +66,13 @@ class LessorController extends Controller
         $data=Lessor::find($id);
         if(is_object($data)){
             $data = $data->load('user');
-            $response = Responses::ok(
+            $response = JsonResponses::ok(
                 'Datos del arrendador',
                 $data,
                 'lessor'
             );
         }else{
-            $response = Responses::notFound('Recurso no encontrado');
+            $response = JsonResponses::notFound('Recurso no encontrado');
         }
         return $response;
     }
@@ -81,14 +81,14 @@ class LessorController extends Controller
         if(isset($id)){
             $deleted=Lessor::where('booking_id',$id)->delete();
             if($deleted){
-                $response=Responses::ok('Reserva eliminada');
+                $response=JsonResponses::ok('Reserva eliminada');
             } else {
-                $response = Responses::badRequest(
+                $response = JsonResponses::badRequest(
                     'No se pudo eliminar el recurso, compruebe que exista'                
                 );
             }
         }else{
-            $response = Responses::notAcceptable(
+            $response = JsonResponses::notAcceptable(
                 'Falta el identificador del recurso a eliminar'                
             );
         }

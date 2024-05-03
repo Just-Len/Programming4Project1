@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Lodging;
 use Illuminate\Http\Request;
-use App\Utils\Responses;
+use App\Utils\JsonResponses;
 
 class LodgingController extends Controller
 {
     public function index()
     {
-        return Lodging::all();
-        return Responses::ok(
+        $data = Lodging::all();
+        return JsonResponses::ok(
             "Todos los registros de las reservas",
             $data,
         );
@@ -39,19 +39,20 @@ class LodgingController extends Controller
                 $lodging->per_night_price=$data['per_night_price'];
                 $lodging->available_rooms=$data['available_rooms'];
                 $lodging->save();
-                $response = Responses::created(
-                    'Reserva creada',
+                $response = JsonResponses::created(
+                    'Alojamiento creado',
+                    'lodging',
                     $lodging
                 );
             }else{
-                $response = Responses::notAcceptable(
+                $response = JsonResponses::notAcceptable(
                     'Datos inválidos',
                     'errors',
                     $isValid->errors()
                 );
             }
         }else{
-            $response = Responses::badRequest('No se encontró el objeto data');
+            $response = JsonResponses::badRequest('No se encontró el objeto data');
         }
         return $response;
     }
@@ -61,13 +62,13 @@ class LodgingController extends Controller
         if(is_object($data)){
             $data=$data->load('lessor');
 
-            $response = Responses::ok(
+            $response = JsonResponses::ok(
                 'Datos del alojamiento',
                 $data,
                 'lodging' 
             );
         }else{
-            $response = Responses::notFound(
+            $response = JsonResponses::notFound(
                 'Recurso no encontrado'                
             );
         }
@@ -78,14 +79,14 @@ class LodgingController extends Controller
         if(isset($id)){
             $deleted=Lodging::where('lodging_id',$id)->delete();
             if($deleted){
-                $response = Responses::ok('Alojamiento eliminado');
+                $response = JsonResponses::ok('Alojamiento eliminado');
             }else{
-                $response = Responses::badRequest(
+                $response = JsonResponses::badRequest(
                     'No se pudo eliminar el recurso, compruebe que exista'                
                 );
             }
         }else{
-                $response = Responses::notAcceptable(
+                $response = JsonResponses::notAcceptable(
                     'Falta el identificador del recurso a eliminar'                
                 );
             }

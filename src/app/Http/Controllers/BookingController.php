@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use Illuminate\Http\Request;
-use App\Utils\Responses;
+use App\Utils\JsonResponses;
 
 class BookingController extends Controller
 {
     public function index()
     {
         $data = Booking::all();
-        return Responses::ok(
+        return JsonResponses::ok(
             'Todos los registros de las reservas',
             $data);
     }
@@ -37,20 +37,20 @@ class BookingController extends Controller
                 $booking->start_date=$data['start_date'];
                 $booking->end_date=$data['end_date'];
                 $booking->save();
-                $response = Responses::created(
+                $response = JsonResponses::created(
                     'Reserva creada',
                     'booking',
                     $booking
                 );
             } else {
-                $response = Responses::notAcceptable(
+                $response = JsonResponses::notAcceptable(
                     'Datos inválidos',
                     'errors',
                     $isValid->errors()
                 );
             }
         } else {
-            $response = Responses::badRequest('No se encontró el objeto data');
+            $response = JsonResponses::badRequest('No se encontró el objeto data');
         }
 
         return $response;
@@ -61,13 +61,13 @@ class BookingController extends Controller
         if(is_object($data)) {
             $data = $data->load('lodging');
             $data = $data->load('customer');
-            $response = Responses::ok(
+            $response = JsonResponses::ok(
                 'Datos de la reserva',
                 $data,
                 'booking'
             );
         } else {
-            $response = Responses::notFound('Recurso no encontrado');
+            $response = JsonResponses::notFound('Recurso no encontrado');
         }
         return $response;
     }
@@ -76,12 +76,12 @@ class BookingController extends Controller
         if (isset($id)) {
             $deleted = Booking::where('booking_id',$id)->delete();
             if ($deleted) {
-                $response = Responses::ok('Reserva eliminada');
+                $response = JsonResponses::ok('Reserva eliminada');
             } else {
-                $response = Responses::badRequest('No se pudo eliminar el recurso, compruebe que exista');
+                $response = JsonResponses::badRequest('No se pudo eliminar el recurso, compruebe que exista');
             }
         } else {
-                $response = Responses::notAcceptable('Falta el identificador del recurso a eliminar');
+                $response = JsonResponses::notAcceptable('Falta el identificador del recurso a eliminar');
         }
         return $response;
     }

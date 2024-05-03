@@ -2,7 +2,7 @@
 
 namespace App\Utils;
 
-class Responses
+class JsonResponses
 {
     static function getJsonResponse($data)
     {
@@ -14,14 +14,14 @@ class Responses
         return array(
             'status' => $statusCode,
             'message' => $message,
-            'cat' => "https://http.cat/$statusCode.png"
+            'cat' => "https://http.cat/$statusCode"
         );
     }
 
     //
     // 200 status codes
     //
-    public static function ok($message, $data, $dataKey = 'data')
+    public static function ok($message, $data = null, $dataKey = 'data')
     {
         $responseData = self::getResponseData(200, $message);
 
@@ -55,7 +55,7 @@ class Responses
         return self::getJsonResponse($responseData);
     }
 
-    public static function notAcceptable($message, $dataKey, $data)
+    public static function notAcceptable($message, $dataKey = null, $data = null)
     {
         $responseData = self::getResponseData(406, $message);
         
