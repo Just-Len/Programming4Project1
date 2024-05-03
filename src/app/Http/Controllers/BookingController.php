@@ -13,29 +13,31 @@ class BookingController extends Controller
         $data = Booking::all();
         return JsonResponses::ok(
             'Todos los registros de las reservas',
-            $data);
+            $data
+        );
     }
 
-    public function store(Request $request){
-        $data_input = $request->input('data',null);
-        if($data_input) {
-            $data = json_decode($data_input,true);
+    public function store(Request $request)
+    {
+        $data_input = $request->input('data', null);
+        if ($data_input) {
+            $data = json_decode($data_input, true);
             $rules = [
-                'lodging_id'=>'required|exists:lodging',
-                'customer_id'=>'required|exists:customer',
-                'status_id'=>'required|alpha|exists:booking_status,booking_status_id',
-                'start_date'=>'required|date_format:Y-m-d H:i',
-                'end_date'=>'required|date_format:Y-m-d H:i'
+                'lodging_id' => 'required|exists:lodging',
+                'customer_id' => 'required|exists:customer',
+                'status_id' => 'required|alpha|exists:booking_status,booking_status_id',
+                'start_date' => 'required|date_format:Y-m-d H:i',
+                'end_date' => 'required|date_format:Y-m-d H:i'
             ];
 
-            $isValid=\validator($data,$rules);
-            if(!$isValid->fails()){
-                $booking=new Booking();
-                $booking->lodging_id=$data['lodging_id'];
-                $booking->customer_id=$data['customer_id'];
-                $booking->status_id=$data['status_id'];
-                $booking->start_date=$data['start_date'];
-                $booking->end_date=$data['end_date'];
+            $isValid = \validator($data, $rules);
+            if (!$isValid->fails()) {
+                $booking = new Booking();
+                $booking->lodging_id = $data['lodging_id'];
+                $booking->customer_id = $data['customer_id'];
+                $booking->status_id = $data['status_id'];
+                $booking->start_date = $data['start_date'];
+                $booking->end_date = $data['end_date'];
                 $booking->save();
                 $response = JsonResponses::created(
                     'Reserva creada',
@@ -56,9 +58,10 @@ class BookingController extends Controller
         return $response;
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $data = Booking::find($id);
-        if(is_object($data)) {
+        if (is_object($data)) {
             $data = $data->load('lodging');
             $data = $data->load('customer');
             $response = JsonResponses::ok(
@@ -72,16 +75,17 @@ class BookingController extends Controller
         return $response;
     }
 
-    public function destroy($id) {
+    public function destroy($id)
+    {
         if (isset($id)) {
-            $deleted = Booking::where('booking_id',$id)->delete();
+            $deleted = Booking::where('booking_id', $id)->delete();
             if ($deleted) {
                 $response = JsonResponses::ok('Reserva eliminada');
             } else {
                 $response = JsonResponses::badRequest('No se pudo eliminar el recurso, compruebe que exista');
             }
         } else {
-                $response = JsonResponses::notAcceptable('Falta el identificador del recurso a eliminar');
+            $response = JsonResponses::notAcceptable('Falta el identificador del recurso a eliminar');
         }
         return $response;
     }
