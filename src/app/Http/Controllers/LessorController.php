@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Lessor;
 use Illuminate\Http\Request;
+use App\Utils\Responses;
 
 class LessorController extends Controller
 {
@@ -13,15 +14,12 @@ class LessorController extends Controller
     public function index()
     {
         $data=Lessor::all();
-        $response=array(
-            "status"=>200,
-            "message"=>"Todos los registros de arrendadores",
-            "data"=>$data
-        );
-        return response()->json($response,200);    
+        return Responses::ok(
+            "Todos los registros de arrendadores",
+            $data);
     }
 
-        /**
+    /**
      * Metodo POST
      */
     public function store(Request $request){
@@ -45,65 +43,55 @@ class LessorController extends Controller
                 $lessor->phone_number=$data('phone_number');
                 $lessor->email_address=$data('email_address');
                 $lessor->save();
-                $response=array(
-                    'status'=>201,
-                    'message'=>'Arrendador creada',
-                    'lessor'=>$lessor
+                $response= Responses::created(
+                    'Arrendador creada',
+                    'lessor',
+                    $lessor
                 );
-            }else{
-                $response=array(
-                    'status'=>406,
-                    'message'=>'Datos inválidos',
-                    'errors'=>$isValid->errors()
+            } else {
+                $response = Responses::notAcceptable(
+                    'Datos inválidos',
+                    'errors',
+                    $isValid->errors()
                 );
             }
-        }else{
-            $response=array(
-                'status'=>400,
-                'message'=>'No se encontró el objeto data'                
-            );
+        } else {
+            $response = Responses::badRequest('No se encontró el objeto data');
         }
-        return response()->json($response,$response['status']);
+
+        return $response;
     }
 
     public function show($id){
         $data=Lessor::find($id);
         if(is_object($data)){
-            $data=$data->load('user');
-            $response=array(
-                'status'=>200,
-                'message'=>'Datos del arrendador',
-                'Lessor'=>$data
+            $data = $data->load('user');
+            $response = Responses::ok(
+                'Datos del arrendador',
+                $data,
+                'lessor'
             );
         }else{
-            $response=array(
-                'status'=>404,
-                'message'=>'Recurso no encontrado'
-            );
+            $response = Responses::notFound('Recurso no encontrado');
         }
-        return response()->json($response,$response['status']);
+        return $response;
     }
 
     public function destroy($id){
         if(isset($id)){
             $deleted=Lessor::where('booking_id',$id)->delete();
             if($deleted){
-                $response=array(
-                    'status'=>200,
-                    'message'=>'Reserva eliminada',                    
-                );
-            }else{
-                $response=array(
-                    'status'=>400,
-                    'message'=>'No se pudo eliminar el recurso, compruebe que exista'                
+                $response=Responses::ok('Reserva eliminada');
+            } else {
+                $response = Responses::badRequest(
+                    'No se pudo eliminar el recurso, compruebe que exista'                
                 );
             }
         }else{
-            $response=array(
-            'status'=>406,
-            'message'=>'Falta el identificador del recurso a eliminar'                
+            $response = Responses::notAcceptable(
+                'Falta el identificador del recurso a eliminar'                
             );
         }
-        return response()->json($response,$response['status']);
+        return $response;
     }
 }

@@ -4,18 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Lodging;
 use Illuminate\Http\Request;
+use App\Utils\Responses;
 
 class LodgingController extends Controller
 {
     public function index()
     {
         return Lodging::all();
-        $response=array(
-            "status"=>200,
-            "message"=>"Todos los registros de las reservas",
-            "data"=>$data
+        return Responses::ok(
+            "Todos los registros de las reservas",
+            $data,
         );
-        return response()->json($response,200);
     }
 
     public function store(Request $request){
@@ -40,25 +39,21 @@ class LodgingController extends Controller
                 $lodging->per_night_price=$data['per_night_price'];
                 $lodging->available_rooms=$data['available_rooms'];
                 $lodging->save();
-                $response=array(
-                    'status'=>201,
-                    'message'=>'Reserva creada',
-                    'lodging'=>$lodging
+                $response = Responses::created(
+                    'Reserva creada',
+                    $lodging
                 );
             }else{
-                $response=array(
-                    'status'=>406,
-                    'message'=>'Datos inválidos',
-                    'errors'=>$isValid->errors()
+                $response = Responses::notAcceptable(
+                    'Datos inválidos',
+                    'errors',
+                    $isValid->errors()
                 );
             }
         }else{
-            $response=array(
-                'status'=>400,
-                'message'=>'No se encontró el objeto data'                
-            );
+            $response = Responses::badRequest('No se encontró el objeto data');
         }
-        return response()->json($response,$response['status']);
+        return $response;
     }
 
     public function show($id){
@@ -66,40 +61,34 @@ class LodgingController extends Controller
         if(is_object($data)){
             $data=$data->load('lessor');
 
-            $response=array(
-                'status'=>200,
-                'message'=>'Datos del alojamiento',
-                'booking'=>$data
+            $response = Responses::ok(
+                'Datos del alojamiento',
+                $data,
+                'lodging' 
             );
         }else{
-            $response=array(
-                'status'=>404,
-                'message'=>'Recurso no encontrado'                
+            $response = Responses::notFound(
+                'Recurso no encontrado'                
             );
         }
-        return response()->json($response,$response['status']);
+        return $response;
     }
 
     public function destroy($id){
         if(isset($id)){
             $deleted=Lodging::where('lodging_id',$id)->delete();
             if($deleted){
-                $response=array(
-                    'status'=>200,
-                    'message'=>'Alojamiento eliminado',                    
-                );
+                $response = Responses::ok('Alojamiento eliminado');
             }else{
-                $response=array(
-                    'status'=>400,
-                    'message'=>'No se pudo eliminar el recurso, compruebe que exista'                
+                $response = Responses::badRequest(
+                    'No se pudo eliminar el recurso, compruebe que exista'                
                 );
             }
         }else{
-                $response=array(
-                'status'=>406,
-                'message'=>'Falta el identificador del recurso a eliminar'                
+                $response = Responses::notAcceptable(
+                    'Falta el identificador del recurso a eliminar'                
                 );
             }
-        return response()->json($response,$response['status']);
+        return $response;
     }
 }
