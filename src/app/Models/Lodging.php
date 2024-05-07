@@ -10,7 +10,7 @@ class Lodging extends Model
 
     protected $primaryKey = 'lodging_id';
 
-    public $timestamp = false;
+    public $timestamps = false;
 
     protected $fillable = [
         'lessor_id',

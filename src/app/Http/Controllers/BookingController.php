@@ -57,7 +57,6 @@ class BookingController extends Controller
 
         return $response;
     }
-
     public function show($id)
     {
         $data = Booking::find($id);
@@ -75,6 +74,7 @@ class BookingController extends Controller
         return $response;
     }
 
+    
     public function destroy($id = null)
     {
         if (isset($id)) {
