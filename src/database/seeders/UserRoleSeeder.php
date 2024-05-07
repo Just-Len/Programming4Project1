@@ -29,7 +29,7 @@ class UserRoleSeeder extends Seeder
         if (!UserRole::where('role_id', 3)->exists()) {
             UserRole::create([
                 'role_id' => 3,
-                'type' => 'arrendario',
+                'type' => 'arrendador',
             ]);
         }
     }
