@@ -15,8 +15,7 @@ class JwtAuth{
 
     public function getToken($name,$password){
         $pass=hash('sha256',$password);
-        $user=User::where(['name'=>$name])->first();
-        
+        $user=User::where(['name'=>$name,'password'=>$pass])->first();
         if(is_object($user)){
             $token=array(
                 'iss'=>$user->name,
@@ -46,10 +45,10 @@ class JwtAuth{
                 $authFlag = false;
             }
             if(!empty($decoded)&&is_object($decoded)&&isset($decoded->iss)){
-                $authFlag - true;
+                $authFlag = true;
             }
             if($getId && $authFlag){
-                return $authFlag;
+                return $decoded;
             }
         }
     }

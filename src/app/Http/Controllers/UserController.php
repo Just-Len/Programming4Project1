@@ -8,6 +8,7 @@ use App\Models\Lessor;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\JwtAuth;
 
 class UserController extends Controller
 {
@@ -174,7 +175,54 @@ class UserController extends Controller
         }
         return response()->json($response, $response['status']);
     }
+
+    public function show($id){
+        $data = User::find($id);
+        if (is_object($data)) {
+            $response = JsonResponses::ok(
+                'Datos de la reserva',
+                $data,
+                'booking'
+            );
+        } else {
+            $response = JsonResponses::notFound('Recurso no encontrado');
+        }
+        return $response;
+    }
     
+    public function login(Request $request){
+        $data_input=$request->input('data',null);
+        $data=json_decode($data_input,true);
+        $data=array_map('trim',$data);
+        $rules=['name'=>'required','password'=>'required'];
+        $isValid=\validator($data,$rules);
+        if(!$isValid->fails()){
+            $jwt=new JwtAuth();
+            $response=$jwt->getToken($data['name'],$data['password']);
+            return response()->json($response);
+        }else{
+            $response=array(
+                'status'=>406,
+                'message'=>'Error en la validación de los datos',
+                'errors'=>$isValid->errors(),
+            );
+            return response()->json($response,406);
+        }
+
+    }
     
-    
+
+    public function getIdentity(Request $request){
+        $jwt=new JwtAuth();
+        $token=$request->header('bearertoken');
+        if(isset($token)){
+            $response=$jwt->checkToken($token,true);
+        }else{
+            $response=array(
+                'status'=>404,
+                'message'=>'token (bearertoken) no encontrado',
+            );
+        }
+        return response()->json($response);
+    }
 }

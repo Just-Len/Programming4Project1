@@ -34,7 +34,6 @@ class LessorController extends Controller
                 'first_name' => 'required|alpha',
                 'last_name' => 'required|alpha',
                 'phone_number' => 'required|numeric',
-                'email_address' => 'required|alpha|email:rfc,dns'
             ];
             $isValid = \validator($data, $rules);
             if (!$isValid->fails()) {
@@ -43,7 +42,6 @@ class LessorController extends Controller
                 $lessor->first_name = $data('fist_name');
                 $lessor->last_name = $data('last_name');
                 $lessor->phone_number = $data('phone_number');
-                $lessor->email_address = $data('email_address');
                 $lessor->save();
                 $response = JsonResponses::created(
                     'Arrendador creado',
@@ -83,9 +81,9 @@ class LessorController extends Controller
     public function destroy($id = null)
     {
         if (isset($id)) {
-            $deleted = Lessor::where('booking_id', $id)->delete();
+            $deleted = Lessor::where('lessor_id', $id)->delete();
             if ($deleted) {
-                $response = JsonResponses::ok('Reserva eliminada');
+                $response = JsonResponses::ok('Arrendador eliminado');
             } else {
                 $response = JsonResponses::badRequest(
                     'No se pudo eliminar el recurso, compruebe que exista'
@@ -94,6 +92,52 @@ class LessorController extends Controller
         } else {
             $response = JsonResponses::notAcceptable(
                 'Falta el identificador del recurso a eliminar'
+            );
+        }
+        return $response;
+    }
+
+    public function update(Request $request)
+    {
+        $data_input = $request->input('data', null);
+        if ($data_input) {
+            $data = json_decode($data_input, true);
+            $data = array_map('trim', $data);
+                $rules = [
+                    'lessor_id' => 'required|numeric',
+                ];
+                $isValid = \validator($data, $rules);
+                if (!$isValid->fails()) {
+                    $lessor = Lessor::find($data['lessor_id']);
+                    if(is_object($lessor)){
+                        if(isset($data['first_name'])){
+                            $lessor->first_name = $data['first_name'];
+                        }
+                        if(isset($data['last_name'])){
+                            $lessor->last_name = $data['last_name'];
+                        }
+                        if(isset($data['phone_number'])){
+                            $lessor->phone_number = $data['phone_number'];
+                        }
+                        $lessor->save();
+                        $response = JsonResponses::ok('Arrendador actualizado');
+                    }else{
+                        $response = JsonResponses::notAcceptable(
+                            'No se encontro el arrendador',
+                            'errors',
+                            $isValid->errors()
+                        );
+                    }
+                } else {
+                    $response = JsonResponses::notAcceptable(
+                        'Debe ingresar el ID de un arrendador existente y valido',
+                        'errors',
+                        $isValid->errors()
+                    );
+                }
+        }else{
+            $response = JsonResponses::badRequest(
+                'Debe ingresar la informacion en el formato correcto'
             );
         }
         return $response;

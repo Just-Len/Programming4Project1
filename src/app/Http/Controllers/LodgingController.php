@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lodging;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use App\Utils\JsonResponses;
 
@@ -22,6 +23,7 @@ class LodgingController extends Controller
         $data_input = $request->input('data', null);
         if ($data_input) {
             $data = json_decode($data_input, true);
+            $data = array_map('trim', $data);
             $rules = [
                 'lessor_id' => 'required|exists:lessor',
                 'name' => 'required|alpha',
@@ -80,17 +82,75 @@ class LodgingController extends Controller
     public function destroy($id = null)
     {
         if (isset($id)) {
-            $deleted = Lodging::where('lodging_id', $id)->delete();
-            if ($deleted) {
-                $response = JsonResponses::ok('Alojamiento eliminado');
-            } else {
+            if(Booking::where('lodging_id', $id)->count()<1){
+                $deleted = Lodging::where('lodging_id', $id)->delete();
+                if ($deleted) {
+                    $response = JsonResponses::ok('Alojamiento eliminado');
+                } else {
+                    $response = JsonResponses::badRequest(
+                        'No se pudo eliminar el recurso, compruebe que exista'
+                    );
+                }
+            }else{
                 $response = JsonResponses::badRequest(
-                    'No se pudo eliminar el recurso, compruebe que exista'
+                    'No se puede eliminar este alojamiento, aun tiene reservas activas'
                 );
             }
         } else {
             $response = JsonResponses::notAcceptable(
                 'Falta el identificador del recurso a eliminar'
+            );
+        }
+        return $response;
+    }
+
+    public function update(Request $request)
+    {
+        $data_input = $request->input('data', null);
+        if ($data_input) {
+            $data = json_decode($data_input, true);
+            $data = array_map('trim', $data);
+                $rules = [
+                    'lodging_id' => 'required|numeric',
+                ];
+                $isValid = \validator($data, $rules);
+                if (!$isValid->fails()) {
+                    $lodging = Lodging::find($data['lodging_id']);
+                    if(is_object($lodging)){
+                        if(isset($data['name'])){
+                            $lodging->name = $data['name'];
+                        }
+                        if(isset($data['description'])){
+                            $lodging->description = $data['description'];
+                        }
+                        if(isset($data['address'])){
+                            $lodging->address = $data['address'];
+                        }
+                        if(isset($data['per_night_price'])){
+                            $lodging->per_night_price = $data['per_night_price'];
+                        }
+                        if(isset($data['available_rooms'])){
+                            $lodging->available_rooms = $data['available_rooms'];
+                        }
+                        $lodging->save();
+                        $response = JsonResponses::ok('Alojamiento actualizado');
+                    }else{
+                        $response = JsonResponses::notAcceptable(
+                            'No se encontro el alojamiento',
+                            'errors',
+                            $isValid->errors()
+                        );
+                    }
+                } else {
+                    $response = JsonResponses::notAcceptable(
+                        'Debe ingresar el ID de un alojamiento existente y valido',
+                        'errors',
+                        $isValid->errors()
+                    );
+                }
+        }else{
+            $response = JsonResponses::badRequest(
+                'Debe ingresar la informacion en el formato correcto'
             );
         }
         return $response;

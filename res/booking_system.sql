@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS user (
   CONSTRAINT FK_user_user_role
     FOREIGN KEY (role_id)
     REFERENCES user_role (role_id)
-    ON DELETE NO ACTION
+    ON DELETE RESTRICT
     ON UPDATE NO ACTION
 );
 
@@ -33,6 +33,8 @@ CREATE TABLE IF NOT EXISTS customer (
   CONSTRAINT FK_customer_user
     FOREIGN KEY (user_name)
     REFERENCES user (name)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS lessor (
@@ -46,6 +48,8 @@ CREATE TABLE IF NOT EXISTS lessor (
   CONSTRAINT FK_lessor_user
     FOREIGN KEY (user_name)
     REFERENCES user (name)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS administrator (
@@ -59,7 +63,7 @@ CREATE TABLE IF NOT EXISTS administrator (
   CONSTRAINT FK_administrator_user
     FOREIGN KEY (user_name)
     REFERENCES user (name)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION
 );
 
@@ -76,6 +80,8 @@ CREATE TABLE IF NOT EXISTS lodging (
   CONSTRAINT FK_lodging_lessor
     FOREIGN KEY (lessor_id)
     REFERENCES lessor (lessor_id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS booking_status (
@@ -96,18 +102,24 @@ CREATE TABLE IF NOT EXISTS booking (
   INDEX FK_INDEX_booking_booking_status (status_id),
   INDEX FK_INDEX_booking_lodging (lodging_id),
   INDEX FK_INDEX_booking_customer (customer_id),
-  
+
   CONSTRAINT FK_booking_booking_status
     FOREIGN KEY (status_id)
-    REFERENCES booking_status (booking_status_id),
-	
+    REFERENCES booking_status (booking_status_id)
+    ON DELETE RESTRICT
+    ON UPDATE NO ACTION,
+
   CONSTRAINT FK_booking_lodging
     FOREIGN KEY (lodging_id)
-    REFERENCES lodging (lodging_id),
-	
+    REFERENCES lodging (lodging_id)
+    ON DELETE RESTRICT
+    ON UPDATE NO ACTION,
+
   CONSTRAINT FK_booking_customer
     FOREIGN KEY (customer_id)
     REFERENCES customer (customer_id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS payment (
@@ -115,8 +127,10 @@ CREATE TABLE IF NOT EXISTS payment (
   date CHAR(50) NOT NULL,
   total_amount DECIMAL UNSIGNED NOT NULL,
   INDEX FK_INDEX_booking_payment (booking_id),
-  
+
   CONSTRAINT FK_booking_payment
     FOREIGN KEY (booking_id)
     REFERENCES booking (booking_id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
 );

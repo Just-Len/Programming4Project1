@@ -25,11 +25,10 @@ class BookingController extends Controller
             $rules = [
                 'lodging_id' => 'required|exists:lodging',
                 'customer_id' => 'required|exists:customer',
-                'status_id' => 'required|alpha|exists:booking_status,booking_status_id',
+                'status_id' => 'required|exists:booking_status,booking_status_id',
                 'start_date' => 'required|date_format:Y-m-d H:i',
                 'end_date' => 'required|date_format:Y-m-d H:i'
             ];
-
             $isValid = \validator($data, $rules);
             if (!$isValid->fails()) {
                 $booking = new Booking();
@@ -57,6 +56,7 @@ class BookingController extends Controller
 
         return $response;
     }
+    
     public function show($id)
     {
         $data = Booking::find($id);
@@ -88,6 +88,49 @@ class BookingController extends Controller
         } else {
             $response = JsonResponses::notAcceptable(
                 'Falta el identificador del recurso a eliminar');
+        }
+        return $response;
+    }
+
+    public function update(Request $request)
+    {
+        $data_input = $request->input('data', null);
+        if ($data_input) {
+            $data = json_decode($data_input, true);
+            $data = array_map('trim', $data);
+                $rules = [
+                    'booking_id' => 'required|numeric',
+                ];
+                $isValid = \validator($data, $rules);
+                if (!$isValid->fails()) {
+                    $booking = booking::find($data['booking_id']);
+                    if(is_object($booking)){
+                        if(isset($data['start_date'])){
+                            $booking->start_date = $data['start_date'];
+                        }
+                        if(isset($data['end_date'])){
+                            $booking->end_date = $data['end_date'];
+                        }
+                        $booking->save();
+                        $response = JsonResponses::ok('Reserva actualizada');
+                    }else{
+                        $response = JsonResponses::notAcceptable(
+                            'No se encontro la reserva',
+                            'errors',
+                            $isValid->errors()
+                        );
+                    }
+                } else {
+                    $response = JsonResponses::notAcceptable(
+                        'Debe ingresar el ID de una reserva existente y valida',
+                        'errors',
+                        $isValid->errors()
+                    );
+                }
+        }else{
+            $response = JsonResponses::badRequest(
+                'Debe ingresar la informacion en el formato correcto'
+            );
         }
         return $response;
     }
