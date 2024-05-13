@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\BookingStatus;
 use Illuminate\Http\Request;
 use App\Utils\JsonResponses;
 
@@ -14,6 +15,14 @@ class BookingController
         return JsonResponses::ok(
             'Todos los registros de las reservas',
             $data
+        );
+    }
+
+    public function indexBookingStatus()
+    {
+        return JsonResponses::ok(
+            'Todos los registros de los estados de reserva',
+            BookingStatus::all()
         );
     }
 

@@ -15,11 +15,14 @@ Route::prefix('v1')->group(
         Route::apiResource('/booking', BookingController::class, ['except' => ['create', 'edit']]);
         Route::apiResource('/lodging', LodgingController::class, ['except' => ['create', 'edit']]);
         
+        Route::get('/booking_status', [BookingController::class, 'indexBookingStatus']);
         Route::get('/customer/{customer_id?}', [CustomerController::class, 'show']);
-        Route::get('/customer/{customer_id}/booking', [CustomerController::class, 'showBookings']);
+        Route::get('/customer/{customer_id}/booking', [CustomerController::class, 'indexBooking']);
         Route::get('/lessor/{lessor_id?}', [LessorController::class, 'show']);
+        Route::get('/lodging/{lodging_id}/booking', [LodgingController::class, 'indexBooking']);
         Route::get('/user/getidentity', [UserController::class, 'getIdentity'])->middleware(ApiAuthMiddleware::class);
         Route::get('/user', [UserController::class, 'index']);
+        Route::get('/user_role', [UserController::class, 'indexUserRole']);
 
         Route::post('/user', [UserController::class, 'store']);
         Route::post('/user/login', [UserController::class, 'login']);

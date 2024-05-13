@@ -8,15 +8,27 @@ use App\Models\Lessor;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Helpers\JwtAuth;
+use App\Models\UserRole;
 use App\Utils\JsonResponses;
 
 class UserController
 {
     public function index()
     {
-        $users = User::with('userRole')->get();
-        return $users;
+        return JsonResponses::ok(
+            'Todos los registros de usuarios',
+            User::with('userRole')->get()
+        );
     }
+
+    public function indexUserRole()
+    {
+        return JsonResponses::ok(
+            'Todos los registros de roles de usuario',
+            UserRole::all()
+        );
+    }
+
     public function store(Request $request)
     {
         $data_input = $request->input('data', null);
@@ -81,6 +93,7 @@ class UserController
 
         return response()->json($response, $response['status']);
     }
+
     public function destroy(Request $request, $id)
     {
         $user = User::find($id);

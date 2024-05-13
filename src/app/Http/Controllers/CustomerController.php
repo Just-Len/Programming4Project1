@@ -33,7 +33,7 @@ class CustomerController
         return $response;
     }
 
-    public function showBookings($id)
+    public function indexBooking($id)
     {
         $lessor = Customer::find($id);
         if ($lessor) {

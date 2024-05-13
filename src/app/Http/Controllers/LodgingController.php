@@ -18,6 +18,17 @@ class LodgingController
         );
     }
 
+    public function indexBooking($id)
+    {
+        $bookings = Booking::where('lodging_id', $id)->with('payment')->get();
+
+        return JsonResponses::ok(
+            'Todos los registros de las reservas del alojamiento',
+            $bookings,
+            'bookings'
+        );
+    }
+
     public function store(Request $request)
     {
         $data_input = $request->input('data', null);
