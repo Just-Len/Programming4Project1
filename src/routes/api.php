@@ -12,25 +12,27 @@ use App\Http\Middleware\ApiAuthMiddleware;
 Route::prefix('v1')->group(
     function () {
         Route::post('/user', [UserController::class, 'store']);
-        Route::post('/lodging', [LodgingController::class, 'store']);
+        Route::post('/lodging', [LodgingController::class, 'store'])->middleware(ApiAuthMiddleware::class);
+        Route::post('/lessor', [LessorController::class, 'store'])->middleware(ApiAuthMiddleware::class);
+        Route::post('/booking', [BookingController::class, 'store'])->middleware(ApiAuthMiddleware::class);
+        Route::post('/user/login', [UserController::class, 'login'])->middleware(ApiAuthMiddleware::class);
 
         Route::get('/user/getidentity', [UserController::class, 'getIdentity'])->middleware(ApiAuthMiddleware::class);
         Route::get('/user', [UserController::class, 'index']);
-        Route::post('/user/login', [UserController::class, 'login']);
 
         Route::apiResource('/booking', BookingController::class, ['except' => ['create', 'edit']]);
         Route::apiResource('/lessor', LessorController::class, ['except' => ['create', 'edit']]);
         Route::apiResource('/lodging', LodgingController::class, ['except' => ['create', 'edit']]);
 
 
-        Route::delete('/booking', [BookingController::class, 'destroy']);
-        Route::delete('/lessor', [LessorController::class, 'destroy']);
-        Route::delete('/lodging', [LodgingController::class, 'destroy']);
-        Route::delete('/user/{name}', [UserController::class,'destroy']);
+        Route::delete('/booking', [BookingController::class, 'destroy'])->middleware(ApiAuthMiddleware::class);
+        Route::delete('/lessor', [LessorController::class, 'destroy'])->middleware(ApiAuthMiddleware::class);
+        Route::delete('/lodging', [LodgingController::class, 'destroy'])->middleware(ApiAuthMiddleware::class);
+        Route::delete('/user/{name}', [UserController::class,'destroy'])->middleware(ApiAuthMiddleware::class);
 
-        Route::patch('/user/{name}', [UserController::class,'updatePartial']);
-        Route::put('lodging', [LodgingController::class, 'update']);
-        Route::put('booking', [BookingController::class, 'update']);
-        Route::put('lessor', [LessorController::class, 'update']);
+        Route::patch('/user/{name}', [UserController::class,'updatePartial'])->middleware(ApiAuthMiddleware::class);
+        Route::put('lodging', [LodgingController::class, 'update'])->middleware(ApiAuthMiddleware::class);
+        Route::put('booking', [BookingController::class, 'update'])->middleware(ApiAuthMiddleware::class);
+        Route::put('lessor', [LessorController::class, 'update'])->middleware(ApiAuthMiddleware::class);
     }
 );
