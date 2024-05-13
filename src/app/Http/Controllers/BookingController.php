@@ -83,11 +83,13 @@ class BookingController
                 $response = JsonResponses::ok('Reserva eliminada');
             } else {
                 $response = JsonResponses::badRequest(
-                    'No se pudo eliminar el recurso, compruebe que exista');
+                    'No se pudo eliminar el recurso, compruebe que exista'
+                );
             }
         } else {
             $response = JsonResponses::notAcceptable(
-                'Falta el identificador del recurso a eliminar');
+                'Falta el identificador del recurso a eliminar'
+            );
         }
         return $response;
     }

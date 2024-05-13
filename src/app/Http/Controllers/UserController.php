@@ -19,7 +19,6 @@ class UserController
     }
     public function store(Request $request)
     {
-
         $data_input = $request->input('data', null);
 
         if ($data_input) {
@@ -28,7 +27,7 @@ class UserController
             $rules = [
                 'name' => 'required|unique:user|max:50',
                 'password' => 'required|string|max:64',
-                'role_id' => 'numeric|between:1,3',
+                'role_id' => 'numeric|exists:user_role',
                 'email_address' => 'required|email|unique:user|max:150'
             ];
             $isValid = validator($data, $rules);
