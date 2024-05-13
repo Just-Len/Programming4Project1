@@ -7,10 +7,10 @@ use App\Models\Customer;
 use App\Models\Lessor;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Helpers\JwtAuth;
+use App\Utils\JsonResponses;
 
-class UserController extends Controller
+class UserController
 {
     public function index()
     {
@@ -26,16 +26,16 @@ class UserController extends Controller
             $data = json_decode($data_input, true);
             $data = array_map('trim', $data);
             $rules = [
-                'name' => 'required',
-                'password' => 'required',
-                'role_id' => 'numeric|between:0,3',
-                'email_address' => 'required|email|unique:user'
+                'name' => 'required|unique:user|max:50',
+                'password' => 'required|string|max:64',
+                'role_id' => 'numeric|between:1,3',
+                'email_address' => 'required|email|unique:user|max:150'
             ];
-            $isValid = \Validator::make($data, $rules);
+            $isValid = validator($data, $rules);
             if (!$isValid->fails()) {
                 $user = new User();
                 $user->name = $data['name'];
-                $user->password = hash('sha256', $data['password']);
+                $user->password = hash('SHA256', $data['password']);
                 $user->role_id = $data['role_id'];
                 $user->email_address = $data['email_address'];
                 $user->save();
@@ -124,10 +124,11 @@ class UserController extends Controller
 
         return response()->json($response, $response['status']);
     }
-    public function updatePartial(Request $request, $name) {
+    public function updatePartial(Request $request, $name)
+    {
 
         $user = User::where('name', $name)->first();
-    
+
         if (!$user) {
             $response = [
                 'message' => 'El usuario no existe.',
@@ -156,7 +157,7 @@ class UserController extends Controller
                 ];
             } else {
                 $data = $request->only(['user_name', 'first_name', 'last_name', 'phone_number', 'email_address']);
-    
+
                 if (empty($data)) {
                     $response = [
                         'message' => 'No se proporcionaron datos para actualizar.',
@@ -176,53 +177,62 @@ class UserController extends Controller
         return response()->json($response, $response['status']);
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $data = User::find($id);
         if (is_object($data)) {
             $response = JsonResponses::ok(
-                'Datos de la reserva',
+                'Datos del usuario',
                 $data,
-                'booking'
+                'user'
             );
         } else {
             $response = JsonResponses::notFound('Recurso no encontrado');
         }
         return $response;
     }
-    
-    public function login(Request $request){
-        $data_input=$request->input('data',null);
-        $data=json_decode($data_input,true);
-        $data=array_map('trim',$data);
-        $rules=['name'=>'required','password'=>'required'];
-        $isValid=\validator($data,$rules);
-        if(!$isValid->fails()){
-            $jwt=new JwtAuth();
-            $response=$jwt->getToken($data['name'],$data['password']);
-            return response()->json($response);
-        }else{
-            $response=array(
-                'status'=>406,
-                'message'=>'Error en la validación de los datos',
-                'errors'=>$isValid->errors(),
-            );
-            return response()->json($response,406);
+
+    public function login(Request $request)
+    {
+        $data_input = $request->input('data', null);
+        $data = json_decode($data_input, true);
+        $data = array_map('trim', $data);
+        $rules = ['name' => 'required', 'password' => 'required'];
+        $validation = validator($data, $rules);
+
+        if (!$validation->fails()) {
+            $jwtAuth = new JwtAuth();
+            $token = $jwtAuth->getToken($data['name'], $data['password']);
+            
+            if ($token) {
+                $response = response()->json($token);
+            }
+            else {
+                $response = JsonResponses::unauthorized('Datos de autenticacion incorrectos');
+            }
+        }
+        else {
+            $response = JsonResponses::notAcceptable(
+                'Error en la validación de los datos',
+                'errors',
+                $validation->errors());
         }
 
+        return $response;
     }
-    
 
-    public function getIdentity(Request $request){
-        $jwt=new JwtAuth();
-        $token=$request->header('bearertoken');
-        if(isset($token)){
-            $response=$jwt->checkToken($token,true);
-        }else{
-            $response=array(
-                'status'=>404,
-                'message'=>'token (bearertoken) no encontrado',
-            );
+
+    public function getIdentity(Request $request)
+    {
+        $jwtAuth = new JwtAuth();
+        $token = $request->bearerToken();
+
+        if (isset($token)) {
+            $response = response()->json($jwtAuth->checkToken($token, true));
+        } else {
+            $response = JsonResponses::notFound('Token (BearerToken) no encontrado');
         }
-        return response()->json($response);
+
+        return $response;
     }
 }

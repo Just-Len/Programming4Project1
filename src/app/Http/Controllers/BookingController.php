@@ -6,7 +6,7 @@ use App\Models\Booking;
 use Illuminate\Http\Request;
 use App\Utils\JsonResponses;
 
-class BookingController extends Controller
+class BookingController
 {
     public function index()
     {
@@ -26,10 +26,10 @@ class BookingController extends Controller
                 'lodging_id' => 'required|exists:lodging',
                 'customer_id' => 'required|exists:customer',
                 'status_id' => 'required|exists:booking_status,booking_status_id',
-                'start_date' => 'required|date_format:Y-m-d H:i',
-                'end_date' => 'required|date_format:Y-m-d H:i'
+                'start_date' => 'required|date_format:Y-m-d H:i|after_or_equal:today',
+                'end_date' => 'required|date_format:Y-m-d H:i|after:start_date'
             ];
-            $isValid = \validator($data, $rules);
+            $isValid = validator($data, $rules);
             if (!$isValid->fails()) {
                 $booking = new Booking();
                 $booking->lodging_id = $data['lodging_id'];
@@ -101,7 +101,7 @@ class BookingController extends Controller
                 $rules = [
                     'booking_id' => 'required|numeric',
                 ];
-                $isValid = \validator($data, $rules);
+                $isValid = validator($data, $rules);
                 if (!$isValid->fails()) {
                     $booking = booking::find($data['booking_id']);
                     if(is_object($booking)){
@@ -122,7 +122,7 @@ class BookingController extends Controller
                     }
                 } else {
                     $response = JsonResponses::notAcceptable(
-                        'Debe ingresar el ID de una reserva existente y valida',
+                        'Debe ingresar el ID de una reserva existente y válida',
                         'errors',
                         $isValid->errors()
                     );

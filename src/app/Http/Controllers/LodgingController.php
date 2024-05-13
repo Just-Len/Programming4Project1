@@ -7,13 +7,13 @@ use App\Models\Booking;
 use Illuminate\Http\Request;
 use App\Utils\JsonResponses;
 
-class LodgingController extends Controller
+class LodgingController
 {
     public function index()
     {
         $data = Lodging::all();
         return JsonResponses::ok(
-            "Todos los registros de las reservas",
+            "Todos los registros de los alojamientos",
             $data,
         );
     }
@@ -26,14 +26,14 @@ class LodgingController extends Controller
             $data = array_map('trim', $data);
             $rules = [
                 'lessor_id' => 'required|exists:lessor',
-                'name' => 'required|alpha',
-                'description' => 'required',
-                'address' => 'required',
-                'per_night_price' => 'required|numeric',
-                'available_rooms' => 'required|numeric'
+                'name' => 'required|string|max:150',
+                'description' => 'required|string|max:1000',
+                'address' => 'required|string|max:300',
+                'per_night_price' => 'required|decimal:2,6',
+                'available_rooms' => 'required|integer'
             ];
-            $isValid = \validator($data, $rules);
-            if (!$isValid->fails()) {
+            $validation = validator($data, $rules);
+            if (!$validation->fails()) {
                 $lodging = new Lodging();
                 $lodging->lessor_id = $data['lessor_id'];
                 $lodging->name = $data['name'];
@@ -42,6 +42,7 @@ class LodgingController extends Controller
                 $lodging->per_night_price = $data['per_night_price'];
                 $lodging->available_rooms = $data['available_rooms'];
                 $lodging->save();
+
                 $response = JsonResponses::created(
                     'Alojamiento creado',
                     'lodging',
@@ -51,7 +52,7 @@ class LodgingController extends Controller
                 $response = JsonResponses::notAcceptable(
                     'Datos inválidos',
                     'errors',
-                    $isValid->errors()
+                    $validation->errors()
                 );
             }
         } else {
@@ -82,7 +83,7 @@ class LodgingController extends Controller
     public function destroy($id = null)
     {
         if (isset($id)) {
-            if(Booking::where('lodging_id', $id)->count()<1){
+            if(Booking::where('lodging_id', $id)->count() < 1){
                 $deleted = Lodging::where('lodging_id', $id)->delete();
                 if ($deleted) {
                     $response = JsonResponses::ok('Alojamiento eliminado');
@@ -113,8 +114,8 @@ class LodgingController extends Controller
                 $rules = [
                     'lodging_id' => 'required|numeric',
                 ];
-                $isValid = \validator($data, $rules);
-                if (!$isValid->fails()) {
+                $validation = validator($data, $rules);
+                if (!$validation->fails()) {
                     $lodging = Lodging::find($data['lodging_id']);
                     if(is_object($lodging)){
                         if(isset($data['name'])){
@@ -136,16 +137,16 @@ class LodgingController extends Controller
                         $response = JsonResponses::ok('Alojamiento actualizado');
                     }else{
                         $response = JsonResponses::notAcceptable(
-                            'No se encontro el alojamiento',
+                            'No se encontró el alojamiento',
                             'errors',
-                            $isValid->errors()
+                            $validation->errors()
                         );
                     }
                 } else {
                     $response = JsonResponses::notAcceptable(
-                        'Debe ingresar el ID de un alojamiento existente y valido',
+                        'Debe ingresar el ID de un alojamiento existente y válido',
                         'errors',
-                        $isValid->errors()
+                        $validation->errors()
                     );
                 }
         }else{

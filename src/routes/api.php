@@ -12,10 +12,10 @@ use App\Http\Middleware\ApiAuthMiddleware;
 Route::prefix('v1')->group(
     function () {
         Route::post('/user', [UserController::class, 'store']);
+        Route::post('/user/login', [UserController::class, 'login']);
         Route::post('/lodging', [LodgingController::class, 'store'])->middleware(ApiAuthMiddleware::class);
         Route::post('/lessor', [LessorController::class, 'store'])->middleware(ApiAuthMiddleware::class);
         Route::post('/booking', [BookingController::class, 'store'])->middleware(ApiAuthMiddleware::class);
-        Route::post('/user/login', [UserController::class, 'login'])->middleware(ApiAuthMiddleware::class);
 
         Route::get('/user/getidentity', [UserController::class, 'getIdentity'])->middleware(ApiAuthMiddleware::class);
         Route::get('/user', [UserController::class, 'index']);
@@ -23,7 +23,6 @@ Route::prefix('v1')->group(
         Route::apiResource('/booking', BookingController::class, ['except' => ['create', 'edit']]);
         Route::apiResource('/lessor', LessorController::class, ['except' => ['create', 'edit']]);
         Route::apiResource('/lodging', LodgingController::class, ['except' => ['create', 'edit']]);
-
 
         Route::delete('/booking', [BookingController::class, 'destroy'])->middleware(ApiAuthMiddleware::class);
         Route::delete('/lessor', [LessorController::class, 'destroy'])->middleware(ApiAuthMiddleware::class);

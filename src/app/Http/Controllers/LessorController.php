@@ -6,11 +6,8 @@ use App\Models\Lessor;
 use Illuminate\Http\Request;
 use App\Utils\JsonResponses;
 
-class LessorController extends Controller
+class LessorController
 {
-    /**
-     * Metodo GET
-     */
     public function index()
     {
         $data = Lessor::all();
@@ -20,9 +17,6 @@ class LessorController extends Controller
         );
     }
 
-    /**
-     * Metodo POST
-     */
     public function store(Request $request)
     {
         $data_input = $request->input('data', null);
@@ -30,12 +24,12 @@ class LessorController extends Controller
             $data = json_decode($data_input, true);
             $data = array_map('trim', $data);
             $rules = [
-                'user_name' => 'required|alpha|exist:user',
-                'first_name' => 'required|alpha',
-                'last_name' => 'required|alpha',
-                'phone_number' => 'required|numeric',
+                'user_name' => 'required|alpha_num|exist:user|max:50',
+                'first_name' => 'required|string|max:50',
+                'last_name' => 'required|string|max:100',
+                'phone_number' => 'required|numeric|max:25',
             ];
-            $isValid = \validator($data, $rules);
+            $isValid = validator($data, $rules);
             if (!$isValid->fails()) {
                 $lessor = new Lessor();
                 $lessor->user_name = $data('user_name');
@@ -106,7 +100,7 @@ class LessorController extends Controller
                 $rules = [
                     'lessor_id' => 'required|numeric',
                 ];
-                $isValid = \validator($data, $rules);
+                $isValid = validator($data, $rules);
                 if (!$isValid->fails()) {
                     $lessor = Lessor::find($data['lessor_id']);
                     if(is_object($lessor)){
@@ -130,7 +124,7 @@ class LessorController extends Controller
                     }
                 } else {
                     $response = JsonResponses::notAcceptable(
-                        'Debe ingresar el ID de un arrendador existente y valido',
+                        'Debe ingresar el ID de un arrendador existente y válido',
                         'errors',
                         $isValid->errors()
                     );

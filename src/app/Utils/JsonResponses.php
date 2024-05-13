@@ -49,6 +49,12 @@ class JsonResponses
         return self::getJsonResponse($responseData);
     }
 
+    public static function unauthorized($message)
+    {
+        $responseData = self::getResponseData(401, $message);
+        return self::getJsonResponse($responseData);
+    }
+
     public static function notFound($message)
     {
         $responseData = self::getResponseData(404, $message);
