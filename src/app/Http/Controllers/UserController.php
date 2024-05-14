@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Helpers\JwtAuth;
 use App\Models\UserRole;
+use App\Utils\Data;
 use App\Utils\JsonResponses;
 
 class UserController
@@ -46,7 +47,7 @@ class UserController
             if (!$isValid->fails()) {
                 $user = new User();
                 $user->name = $data['name'];
-                $user->password = hash('SHA256', $data['password']);
+                $user->password = Data::hash($data['password']);
                 $user->role_id = $data['role_id'];
                 $user->email_address = $data['email_address'];
                 $user->save();
@@ -94,9 +95,66 @@ class UserController
         return response()->json($response, $response['status']);
     }
 
-    public function destroy(Request $request, $id)
+    public function storePassword(Request $request)
     {
-        $user = User::find($id);
+        $userName = $request->route('name');
+        $dataInput = $request->input('data', null);
+
+        if ($dataInput) {
+            $user = User::find($userName);
+
+            if ($user) {
+                $data = json_decode($dataInput, true);
+                $data = array_map('trim', $data);
+
+                $rules = [
+                    'current_password' => 'required|alpha_num|max:50',
+                    'new_password' => 'required|alpha_num|max:50',
+                    'new_password_confirmation' => 'required|alpha_num|max:50',
+                ];
+                $validation = validator($data, $rules);
+                if ($validation->fails()) {
+                    $response = JsonResponses::notAcceptable(
+                        'Error al ingresar los datos',
+                        'errors',
+                        $validation->errors()
+                    );
+                }
+                else if (strcasecmp($user->password, Data::hash($data['current_password'])) != 0) {
+                    $response = JsonResponses::notAcceptable(
+                        'Contraseña incorrecta'
+                    );
+                }
+                else if (strcmp($data['new_password'], $data['new_password_confirmation']) != 0) {
+                    $response = JsonResponses::notAcceptable(
+                        'Las contraseñas no coinciden'
+                    );
+                }
+                else if (strcasecmp($user->password, ($newPassword = Data::hash($data['new_password']))) == 0) {
+                    $response = JsonResponses::notAcceptable(
+                        'La nueva contraseña no puede ser igual a la anterior'
+                    );
+                }
+                else {
+                    $user->password = $newPassword;
+                    $user->save();
+
+                    $response = JsonResponses::ok('La contraseña ha sido cambiada con éxito');
+                }
+            }
+            else {
+                $response = JsonResponses::notFound('No existe un usuario con el nombre especificado');
+            }
+        } else {
+            $response = JsonResponses::badRequest('No se especificó el objeto "data" en la solicitud');
+        }
+
+        return $response;
+    }
+
+    public function destroy($userName)
+    {
+        $user = User::find($userName);
 
         if (!$user) {
             $response = [

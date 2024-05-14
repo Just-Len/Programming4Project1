@@ -6,6 +6,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Firebase\JWT\ExpiredException;
 use App\Models\User;
+use App\Utils\Data;
 
 class JwtAuth
 {
@@ -18,7 +19,7 @@ class JwtAuth
     public function getToken($name, $password)
     {
         $data = null;
-        $pass = hash('SHA256', $password);
+        $pass = Data::hash($password);
         $user = User::where(['name' => $name, 'password' => $pass])->first();
         if (is_object($user)) {
             $token = array(

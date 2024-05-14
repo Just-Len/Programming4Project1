@@ -25,6 +25,7 @@ Route::prefix('v1')->group(
         Route::get('/user_role', [UserController::class, 'indexUserRole']);
 
         Route::post('/user', [UserController::class, 'store']);
+        Route::post('/user/{name}/password', [UserController::class, 'storePassword'])->middleware(ApiAuthMiddleware::class);
         Route::post('/user/login', [UserController::class, 'login']);
         Route::post('/lodging', [LodgingController::class, 'store'])->middleware(ApiAuthMiddleware::class);
         Route::post('/lessor', [LessorController::class, 'store'])->middleware(ApiAuthMiddleware::class);
