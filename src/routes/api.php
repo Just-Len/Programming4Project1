@@ -20,10 +20,13 @@ Route::prefix('v1')->group(
         Route::get('/customer/{customer_id}/booking', [CustomerController::class, 'indexBooking']);
         Route::get('/lessor/{lessor_id?}', [LessorController::class, 'show']);
         Route::get('/lodging/{lodging_id}/booking', [LodgingController::class, 'indexBooking']);
+
         Route::get('/user/getidentity', [UserController::class, 'getIdentity'])->middleware(ApiAuthMiddleware::class);
         Route::get('/user', [UserController::class, 'index']);
         Route::get('/user_role', [UserController::class, 'indexUserRole']);
+        Route::get('/lodging/getimage', [LodgingController::class,'getImage']);
 
+        Route::post('/lodging/uploadImage', [LodgingController::class, 'uploadImage']);
         Route::post('/user', [UserController::class, 'store']);
         Route::post('/user/{name}/password', [UserController::class, 'storePassword'])->middleware(ApiAuthMiddleware::class);
         Route::post('/user/login', [UserController::class, 'login']);

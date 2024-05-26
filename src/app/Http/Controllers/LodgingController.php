@@ -167,4 +167,43 @@ class LodgingController
         }
         return $response;
     }
+
+    public function uploadImage(Request $request){
+        $isValid=\Validator::make($request->all(),['file0'=>'required|image|mimes:jpg,png,jpeg,svg']);
+        if(!$isValid->fails()){
+            $image=$request->file('file0');
+            $filename=\Str::uuid().".".$image->getClientOriginalExtension();
+            \Storage::disk('lodgings')->put($filename,\File::get($image));
+            $response = JsonResponses::ok(
+                'Imagen guardada',
+                'filename: ',$filename
+            );
+        }else{
+            $response = JsonResponses::notAcceptable(
+                'No se encontro el archivo',
+                'errors',
+                $isValid->errors()
+            );
+        }
+    }
+
+    public function getImage($filename){
+        if(isset($filename)){
+            $exist = \Storage::disk('lodgings')->exists($filename);
+            if($exist){
+                $file = \Storage::disk('lodgings')->get($filename);
+                JsonResponses::ok(
+                    $file
+                );
+            }else{
+                JsonResponses::notFound(
+                    'La imagen no existe'
+                );
+            }
+        }else{
+            JsonResponses::notAcceptable(
+                'No se definio el nombre de la imagen'
+            );
+        }
+    }
 }
