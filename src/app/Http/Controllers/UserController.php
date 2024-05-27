@@ -7,6 +7,9 @@ use App\Models\Customer;
 use App\Models\Lessor;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use App\Helpers\JwtAuth;
 use App\Models\UserRole;
 use App\Utils\Data;
@@ -119,30 +122,25 @@ class UserController
                         'errors',
                         $validation->errors()
                     );
-                }
-                else if (strcasecmp($user->password, Data::hash($data['current_password'])) != 0) {
+                } else if (strcasecmp($user->password, Data::hash($data['current_password'])) != 0) {
                     $response = JsonResponses::notAcceptable(
                         'Contraseña incorrecta'
                     );
-                }
-                else if (strcmp($data['new_password'], $data['new_password_confirmation']) != 0) {
+                } else if (strcmp($data['new_password'], $data['new_password_confirmation']) != 0) {
                     $response = JsonResponses::notAcceptable(
                         'Las contraseñas no coinciden'
                     );
-                }
-                else if (strcasecmp($user->password, ($newPassword = Data::hash($data['new_password']))) == 0) {
+                } else if (strcasecmp($user->password, ($newPassword = Data::hash($data['new_password']))) == 0) {
                     $response = JsonResponses::notAcceptable(
                         'La nueva contraseña no puede ser igual a la anterior'
                     );
-                }
-                else {
+                } else {
                     $user->password = $newPassword;
                     $user->save();
 
                     $response = JsonResponses::ok('La contraseña ha sido cambiada con éxito');
                 }
-            }
-            else {
+            } else {
                 $response = JsonResponses::notFound('No existe un usuario con el nombre especificado');
             }
         } else {
@@ -267,7 +265,7 @@ class UserController
         $data_input = $request->input('data', null);
         $data = json_decode($data_input, true);
         $data = array_map('trim', $data);
-        $rules = ['name' => 'required', 'password' => 'required'];
+        $rules = ['name' => 'required|exists:user', 'password' => 'required'];
         $validation = validator($data, $rules);
 
         if (!$validation->fails()) {
@@ -275,16 +273,15 @@ class UserController
             $token = $jwtAuth->getToken($data['name'], $data['password']);
             if ($token) {
                 $response = response()->json($token);
-            }
-            else {
+            } else {
                 $response = JsonResponses::unauthorized('Datos de autenticacion incorrectos');
             }
-        }
-        else {
+        } else {
             $response = JsonResponses::notAcceptable(
                 'Error en la validación de los datos',
                 'errors',
-                $validation->errors());
+                $validation->errors()
+            );
         }
 
         return $response;
@@ -305,17 +302,20 @@ class UserController
         return $response;
     }
 
-    public function uploadImage(Request $request){
-        $isValid=\Validator::make($request->all(),['file0'=>'required|image|mimes:jpg,png,jpeg,svg']);
-        if(!$isValid->fails()){
-            $image=$request->file('file0');
-            $filename=\Str::uuid().".".$image->getClientOriginalExtension();
-            \Storage::disk('users')->put($filename,\File::get($image));
+    public function uploadImage(Request $request)
+    {
+        $isValid = validator($request->all(), ['file0' => 'required|image|mimes:jpg,png,jpeg,svg']);
+        if (!$isValid->fails()) {
+            $image = $request->file('file0');
+            $filename = Str::uuid() . "." . $image->getClientOriginalExtension();
+            Storage::disk('users')->put($filename, File::get($image));
+
             $response = JsonResponses::created(
                 'Imagen guardada',
-                'Filename: ',$filename
+                'Filename: ',
+                $filename
             );
-        }else{
+        } else {
             $response = JsonResponses::notAcceptable(
                 'No se encontro el archivo',
                 'errors',
@@ -325,20 +325,21 @@ class UserController
         return $response;
     }
 
-    public function getImage($filename){
-        if(isset($filename)){
-            $exist = \Storage::disk('users')->exists($filename);
-            if($exist){
-                $file = \Storage::disk('users')->get($filename);
+    public function getImage($filename)
+    {
+        if (isset($filename)) {
+            $exist = Storage::disk('users')->exists($filename);
+            if ($exist) {
+                $file = Storage::disk('users')->get($filename);
                 $response = JsonResponses::ok('La imagen existe');
-            }else{
+            } else {
                 $response = JsonResponses::notFound(
                     'La imagen no existe'
                 );
             }
-        }else{
+        } else {
             $response = JsonResponses::notAcceptable(
-                'No se definio el nombre de la imagen'
+                'No se definió el nombre de la imagen'
             );
         }
         return $response;

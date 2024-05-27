@@ -55,6 +55,12 @@ class JsonResponses
         return self::getJsonResponse($responseData);
     }
 
+    public static function forbidden($message)
+    {
+        $responseData = self::getResponseData(403, $message);
+        return self::getJsonResponse($responseData);
+    }
+
     public static function notFound($message)
     {
         $responseData = self::getResponseData(404, $message);

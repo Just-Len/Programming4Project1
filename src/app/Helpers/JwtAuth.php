@@ -20,14 +20,14 @@ class JwtAuth
     {
         $data = null;
         $pass = Data::hash($password);
-        $user = User::where(['name' => $name, 'password' => $pass])->first();
-        if (is_object($user)) {
+        $user = User::find($name);
+        if (is_object($user) && $user->password == $pass) {
             $token = array(
                 'iss' => $user->name,
                 'email' => $user->email_address,
-                'role_id' => User::where('name', $name)->first()->role_id,
-                'iat' => time(),
-                'exp' => time() + 5000
+                'role_id' => $user->role_id,
+                'iat' => time(), // Unix timestamp in *seconds*
+                'exp' => time() + 2_592_000 // +30 days
             );
             $data = JWT::encode($token, $this->key, "HS256");
         }
@@ -46,7 +46,8 @@ class JwtAuth
                 $authFlag = false;
             }
 
-            if (!empty($decoded) && is_object($decoded) && isset($decoded->iss)) {
+            if (!empty($decoded) && is_object($decoded)
+                && isset($decoded->iss) && time() < $decoded->exp) {
                 $authFlag = true;
             }
 
