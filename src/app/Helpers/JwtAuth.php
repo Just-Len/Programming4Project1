@@ -25,7 +25,7 @@ class JwtAuth
             $token = array(
                 'iss' => $user->name,
                 'email' => $user->email_address,
-                'role_id' => $user->role_id,
+                'role_id' => User::where('name', $name)->first()->role_id,
                 'iat' => time(),
                 'exp' => time() + 5000
             );

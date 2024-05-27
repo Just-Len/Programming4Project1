@@ -174,9 +174,9 @@ class LodgingController
             $image=$request->file('file0');
             $filename=\Str::uuid().".".$image->getClientOriginalExtension();
             \Storage::disk('lodgings')->put($filename,\File::get($image));
-            $response = JsonResponses::ok(
+            $response = JsonResponses::created(
                 'Imagen guardada',
-                'filename: ',$filename
+                'Filename: ',$filename
             );
         }else{
             $response = JsonResponses::notAcceptable(
@@ -185,6 +185,7 @@ class LodgingController
                 $isValid->errors()
             );
         }
+        return $response;
     }
 
     public function getImage($filename){
@@ -192,18 +193,18 @@ class LodgingController
             $exist = \Storage::disk('lodgings')->exists($filename);
             if($exist){
                 $file = \Storage::disk('lodgings')->get($filename);
-                JsonResponses::ok(
-                    $file
-                );
+                $response = JsonResponses::ok('La imagen existe');
             }else{
-                JsonResponses::notFound(
+                $response = JsonResponses::notFound(
                     'La imagen no existe'
                 );
             }
         }else{
-            JsonResponses::notAcceptable(
+            $response = JsonResponses::notAcceptable(
                 'No se definio el nombre de la imagen'
             );
+        
         }
+        return $response;
     }
 }

@@ -273,7 +273,6 @@ class UserController
         if (!$validation->fails()) {
             $jwtAuth = new JwtAuth();
             $token = $jwtAuth->getToken($data['name'], $data['password']);
-            
             if ($token) {
                 $response = response()->json($token);
             }
@@ -306,5 +305,42 @@ class UserController
         return $response;
     }
 
-    
+    public function uploadImage(Request $request){
+        $isValid=\Validator::make($request->all(),['file0'=>'required|image|mimes:jpg,png,jpeg,svg']);
+        if(!$isValid->fails()){
+            $image=$request->file('file0');
+            $filename=\Str::uuid().".".$image->getClientOriginalExtension();
+            \Storage::disk('users')->put($filename,\File::get($image));
+            $response = JsonResponses::created(
+                'Imagen guardada',
+                'Filename: ',$filename
+            );
+        }else{
+            $response = JsonResponses::notAcceptable(
+                'No se encontro el archivo',
+                'errors',
+                $isValid->errors()
+            );
+        }
+        return $response;
+    }
+
+    public function getImage($filename){
+        if(isset($filename)){
+            $exist = \Storage::disk('users')->exists($filename);
+            if($exist){
+                $file = \Storage::disk('users')->get($filename);
+                $response = JsonResponses::ok('La imagen existe');
+            }else{
+                $response = JsonResponses::notFound(
+                    'La imagen no existe'
+                );
+            }
+        }else{
+            $response = JsonResponses::notAcceptable(
+                'No se definio el nombre de la imagen'
+            );
+        }
+        return $response;
+    }
 }
