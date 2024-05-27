@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS user (
   password CHAR(200) NOT NULL,
   role_id INT UNSIGNED NOT NULL,
   email_address VARCHAR(150) NOT NULL,
+  image VARCHAR(100) DEFAULT NULL,
   PRIMARY KEY (name),
   INDEX FK_INDEX_user_role (role_id),
   UNIQUE INDEX UNIQUE_email_address (email_address),
@@ -75,6 +76,7 @@ CREATE TABLE IF NOT EXISTS lodging (
   address VARCHAR(300) NOT NULL,
   per_night_price DECIMAL UNSIGNED NOT NULL,
   available_rooms MEDIUMINT NOT NULL,
+  image VARCHAR(100) DEFAULT NULL,
   PRIMARY KEY (lodging_id),
   INDEX FK_INDEX_lodging_lessor (lessor_id),
   CONSTRAINT FK_lodging_lessor
