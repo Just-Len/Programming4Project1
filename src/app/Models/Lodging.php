@@ -21,7 +21,7 @@ class Lodging extends Model
         'available_rooms'
     ];
 
-    public function lessor(){
-        return $this->belongsTo(Lessor::class);
+    public function lessor() {
+        return $this->belongsTo(Lessor::class, 'lessor_id');
     }
 }

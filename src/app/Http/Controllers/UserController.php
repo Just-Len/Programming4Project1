@@ -287,6 +287,21 @@ class UserController
         return $response;
     }
 
+    public function logOut(Request $request)
+    {
+        $userName = $request->route('name');
+
+        if (($user = User::find($userName))) {
+            $user->last_logout = date('Y-m-d H:i:s', time()); // yyyy-mm-dd hh:mm:ss with 24 hour format
+            $user->save();
+        
+            $response = JsonResponses::ok('La sesión ha sido finalizada con éxito.');
+        } else {
+            $response = JsonResponses::notFound('No existe un usuario con el nombre especificado.');
+        }
+
+        return $response;
+    }
 
     public function getIdentity(Request $request)
     {
@@ -312,7 +327,7 @@ class UserController
 
             $response = JsonResponses::created(
                 'Imagen guardada',
-                'Filename: ',
+                'filename',
                 $filename
             );
         } else {

@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS user (
   password CHAR(200) NOT NULL,
   role_id INT UNSIGNED NOT NULL,
   email_address VARCHAR(150) NOT NULL,
+  last_logout TIMESTAMP NOT NULL DEFAULT '1970-01-01 00:00:00',
   image VARCHAR(100) DEFAULT NULL,
   PRIMARY KEY (name),
   INDEX FK_INDEX_user_role (role_id),

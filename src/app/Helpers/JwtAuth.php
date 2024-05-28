@@ -26,8 +26,9 @@ class JwtAuth
                 'iss' => $user->name,
                 'email' => $user->email_address,
                 'role_id' => $user->role_id,
+                'last_logout' => $user->last_logout,
                 'iat' => time(), // Unix timestamp in *seconds*
-                'exp' => time() + 2_592_000 // +30 days
+                'exp' => time() + 3_6000 // +1 hour 
             );
             $data = JWT::encode($token, $this->key, "HS256");
         }
@@ -46,8 +47,7 @@ class JwtAuth
                 $authFlag = false;
             }
 
-            if (!empty($decoded) && is_object($decoded)
-                && isset($decoded->iss) && time() < $decoded->exp) {
+            if (!empty($decoded) && is_object($decoded) && isset($decoded->iss)) {
                 $authFlag = true;
             }
 

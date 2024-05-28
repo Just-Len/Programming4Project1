@@ -19,7 +19,8 @@ class User extends Authenticatable
         'name',
         'role_id',
         'password',
-        'email_address'
+        'email_address',
+        'last_logout'
     ];
 
     protected $hidden = [
@@ -28,7 +29,7 @@ class User extends Authenticatable
 
     public function userRole(): HasOne
     {
-    return $this->hasOne(UserRole::class, 'role_id', 'role_id');
+        return $this->hasOne(UserRole::class, 'role_id', 'role_id');
     }
 
 }

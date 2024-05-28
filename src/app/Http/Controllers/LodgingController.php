@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Lodging;
 use App\Models\Booking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use App\Utils\JsonResponses;
 
 class LodgingController
@@ -94,7 +97,7 @@ class LodgingController
     public function destroy($id = null)
     {
         if (isset($id)) {
-            if(Booking::where('lodging_id', $id)->count() < 1){
+            if (Booking::where('lodging_id', $id)->count() < 1) {
                 $deleted = Lodging::where('lodging_id', $id)->delete();
                 if ($deleted) {
                     $response = JsonResponses::ok('Alojamiento eliminado');
@@ -103,7 +106,7 @@ class LodgingController
                         'No se pudo eliminar el recurso, compruebe que exista'
                     );
                 }
-            }else{
+            } else {
                 $response = JsonResponses::badRequest(
                     'No se puede eliminar este alojamiento, aun tiene reservas activas'
                 );
@@ -122,45 +125,45 @@ class LodgingController
         if ($data_input) {
             $data = json_decode($data_input, true);
             $data = array_map('trim', $data);
-                $rules = [
-                    'lodging_id' => 'required|numeric',
-                ];
-                $validation = validator($data, $rules);
-                if (!$validation->fails()) {
-                    $lodging = Lodging::find($data['lodging_id']);
-                    if(is_object($lodging)){
-                        if(isset($data['name'])){
-                            $lodging->name = $data['name'];
-                        }
-                        if(isset($data['description'])){
-                            $lodging->description = $data['description'];
-                        }
-                        if(isset($data['address'])){
-                            $lodging->address = $data['address'];
-                        }
-                        if(isset($data['per_night_price'])){
-                            $lodging->per_night_price = $data['per_night_price'];
-                        }
-                        if(isset($data['available_rooms'])){
-                            $lodging->available_rooms = $data['available_rooms'];
-                        }
-                        $lodging->save();
-                        $response = JsonResponses::ok('Alojamiento actualizado');
-                    }else{
-                        $response = JsonResponses::notAcceptable(
-                            'No se encontró el alojamiento',
-                            'errors',
-                            $validation->errors()
-                        );
+            $rules = [
+                'lodging_id' => 'required|numeric',
+            ];
+            $validation = validator($data, $rules);
+            if (!$validation->fails()) {
+                $lodging = Lodging::find($data['lodging_id']);
+                if (is_object($lodging)) {
+                    if (isset($data['name'])) {
+                        $lodging->name = $data['name'];
                     }
+                    if (isset($data['description'])) {
+                        $lodging->description = $data['description'];
+                    }
+                    if (isset($data['address'])) {
+                        $lodging->address = $data['address'];
+                    }
+                    if (isset($data['per_night_price'])) {
+                        $lodging->per_night_price = $data['per_night_price'];
+                    }
+                    if (isset($data['available_rooms'])) {
+                        $lodging->available_rooms = $data['available_rooms'];
+                    }
+                    $lodging->save();
+                    $response = JsonResponses::ok('Alojamiento actualizado');
                 } else {
                     $response = JsonResponses::notAcceptable(
-                        'Debe ingresar el ID de un alojamiento existente y válido',
+                        'No se encontró el alojamiento',
                         'errors',
                         $validation->errors()
                     );
                 }
-        }else{
+            } else {
+                $response = JsonResponses::notAcceptable(
+                    'Debe ingresar el ID de un alojamiento existente y válido',
+                    'errors',
+                    $validation->errors()
+                );
+            }
+        } else {
             $response = JsonResponses::badRequest(
                 'Debe ingresar la informacion en el formato correcto'
             );
@@ -168,17 +171,19 @@ class LodgingController
         return $response;
     }
 
-    public function uploadImage(Request $request){
-        $isValid=\Validator::make($request->all(),['file0'=>'required|image|mimes:jpg,png,jpeg,svg']);
-        if(!$isValid->fails()){
-            $image=$request->file('file0');
-            $filename=\Str::uuid().".".$image->getClientOriginalExtension();
-            \Storage::disk('lodgings')->put($filename,\File::get($image));
+    public function uploadImage(Request $request)
+    {
+        $isValid = validator($request->all(), ['file0' => 'required|image|mimes:jpg,png,jpeg,svg']);
+        if (!$isValid->fails()) {
+            $image = $request->file('file0');
+            $filename = Str::uuid() . "." . $image->getClientOriginalExtension();
+            Storage::disk('lodgings')->put($filename, File::get($image));
             $response = JsonResponses::created(
                 'Imagen guardada',
-                'Filename: ',$filename
+                'filename',
+                $filename
             );
-        }else{
+        } else {
             $response = JsonResponses::notAcceptable(
                 'No se encontro el archivo',
                 'errors',
@@ -188,22 +193,22 @@ class LodgingController
         return $response;
     }
 
-    public function getImage($filename){
-        if(isset($filename)){
-            $exist = \Storage::disk('lodgings')->exists($filename);
-            if($exist){
-                $file = \Storage::disk('lodgings')->get($filename);
+    public function getImage($filename)
+    {
+        if (isset($filename)) {
+            $exist = Storage::disk('lodgings')->exists($filename);
+            if ($exist) {
+                $file = Storage::disk('lodgings')->get($filename);
                 $response = JsonResponses::ok('La imagen existe');
-            }else{
+            } else {
                 $response = JsonResponses::notFound(
                     'La imagen no existe'
                 );
             }
-        }else{
+        } else {
             $response = JsonResponses::notAcceptable(
                 'No se definio el nombre de la imagen'
             );
-        
         }
         return $response;
     }
