@@ -22,29 +22,29 @@ Route::prefix('v1')->group(
         Route::get('/lessor/{lessor_id?}', [LessorController::class, 'show']);
         Route::get('/lodging/{lodging_id}/booking', [LodgingController::class, 'indexBooking'])->middleware(LodgingApiAuthMiddleware::class);
 
-        Route::get('/user/getidentity', [UserController::class, 'getIdentity'])->middleware(ApiAuthMiddleware::class);
+        Route::get('/user/identity', [UserController::class, 'getIdentity'])->middleware(ApiAuthMiddleware::class);
         Route::get('/user', [UserController::class, 'index']);
         Route::get('/user_role', [UserController::class, 'indexUserRole']);
-        Route::get('/lodging/getimage/{filename}', [LodgingController::class,'getImage']);
-        Route::get('/user/getimage/{filename}', [UserController::class, 'getimage']);
+        Route::get('/lodging/{lodging_id}/image', [LodgingController::class,'getImage']);
+        Route::get('/user/{name}/image', [UserController::class, 'getimage']);
 
-        Route::post('/user/{name}/uploadimage', [UserController::class, 'uploadImage'])->middleware(ApiAuthMiddleware::class);
-        Route::post('/lodging/{lodging_id}/uploadimage', [LodgingController::class, 'uploadImage'])->middleware(LodgingApiAuthMiddleware::class);
+        Route::post('/user/{name}/image', [UserController::class, 'uploadImage'])->middleware(ApiAuthMiddleware::class);
+        Route::post('/lodging/{lodging_id}/image', [LodgingController::class, 'uploadImage'])->middleware(LodgingApiAuthMiddleware::class);
         Route::post('/user', [UserController::class, 'store']);
         Route::post('/user/login', [UserController::class, 'login']);
         Route::post('/user/{name}/logout', [UserController::class, 'logOut'])->middleware(ApiAuthMiddleware::class);
         Route::post('/user/{name}/password', [UserController::class, 'storePassword'])->middleware(ApiAuthMiddleware::class);
         Route::post('/lodging', [LodgingController::class, 'store'])->middleware(LodgingApiAuthMiddleware::class);
-        Route::post('/lessor', [LessorController::class, 'store'])->middleware(ApiAuthMiddleware::class);
         Route::post('/booking', [BookingController::class, 'store'])->middleware(ApiAuthMiddleware::class);
 
         Route::delete('/booking', [BookingController::class, 'destroy'])->middleware(ApiAuthMiddleware::class);
-        Route::delete('/lodging', [LodgingController::class, 'destroy'])->middleware(ApiAuthMiddleware::class);
+        Route::delete('/lodging/{lodging_id}', [LodgingController::class, 'destroy'])->middleware(LodgingApiAuthMiddleware::class);
+        Route::delete('/lodging/{lodging_id}/image', [LodgingController::class, 'deleteImage'])->middleware(LodgingApiAuthMiddleware::class);
         Route::delete('/user/{name}', [UserController::class,'destroy'])->middleware(ApiAuthMiddleware::class);
+        Route::delete('/user/{name}/image', [UserController::class,'deleteImage'])->middleware(ApiAuthMiddleware::class);
 
         Route::patch('/user/{name}', [UserController::class,'updatePartial'])->middleware(ApiAuthMiddleware::class);
         Route::put('lodging', [LodgingController::class, 'update'])->middleware(ApiAuthMiddleware::class);
         Route::put('booking', [BookingController::class, 'update'])->middleware(ApiAuthMiddleware::class);
-        Route::put('lessor', [LessorController::class, 'update'])->middleware(ApiAuthMiddleware::class);
     }
 );

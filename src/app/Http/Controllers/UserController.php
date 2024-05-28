@@ -287,10 +287,8 @@ class UserController
         return $response;
     }
 
-    public function logOut(Request $request)
+    public function logOut($userName)
     {
-        $userName = $request->route('name');
-
         if (($user = User::find($userName))) {
             $user->last_logout = date('Y-m-d H:i:s', time()); // yyyy-mm-dd hh:mm:ss with 24 hour format
             $user->save();
@@ -317,44 +315,72 @@ class UserController
         return $response;
     }
 
+    public function deleteImage($userName)
+    {
+        $user = User::find($userName);
+
+        if ($user->image) {
+            $fileName = $user->image;
+            Storage::disk('users')->delete($fileName);
+            $user->image = null;
+            $user->save();
+
+            $response = JsonResponses::ok(
+                'Imagen eliminada con éxito.',
+            );
+        } else {
+            $response = JsonResponses::notFound('El usuario no tiene una imagen.');
+        }
+        return $response;
+    }
+
     public function uploadImage(Request $request)
     {
-        $isValid = validator($request->all(), ['file' => 'required|image|mimes:jpg,png,jpeg,svg']);
-        if (!$isValid->fails()) {
+        $userName = $request->route('name');
+        $user = User::find($userName);
+
+        $validation = validator($request->all(), ['file' => 'required|image|mimes:jpg,png,jpeg,svg']);
+        if (!$validation->fails()) {
             $image = $request->file('file');
-            $filename = Str::uuid() . "." . $image->getClientOriginalExtension();
-            Storage::disk('users')->put($filename, File::get($image));
+            $fileName = Str::uuid() . "." . $image->getClientOriginalExtension();
+            
+            Storage::disk('users')->put($fileName, File::get($image));
+            $user->image = $fileName;
+            $user->save();
 
             $response = JsonResponses::created(
-                'Imagen guardada',
+                'Imagen guardada.',
                 'filename',
-                $filename
+                $fileName
             );
         } else {
             $response = JsonResponses::notAcceptable(
-                'No se encontro el archivo',
+                'No se encontró el archivo en la solicitud.',
                 'errors',
-                $isValid->errors()
+                $validation->errors()
             );
         }
         return $response;
     }
 
-    public function getImage($filename)
+    public function getImage($userName)
     {
-        if (isset($filename)) {
-            $exist = Storage::disk('users')->exists($filename);
-            if ($exist) {
-                $filePath = Storage::disk('users')->path($filename);
-                $response = response()->file($filePath);
-            } else {
-                $response = JsonResponses::notFound(
-                    'La imagen no existe'
-                );
-            }
+        if (!($user = User::find($userName))) {
+            return JsonResponses::notFound('No existe un usuario con el nombre especificado.');
+        }
+
+        if (!$user->image) {
+            return JsonResponses::notFound('El usuario no tiene una imagen.');
+        } 
+
+        $fileName = $user->image;
+        $exist = Storage::disk('users')->exists($fileName);
+        if ($exist) {
+            $filePath = Storage::disk('users')->path($fileName);
+            $response = response()->file($filePath);
         } else {
-            $response = JsonResponses::notAcceptable(
-                'No se definió el nombre de la imagen'
+            $response = JsonResponses::notFound(
+                'La imagen no existe.'
             );
         }
         return $response;

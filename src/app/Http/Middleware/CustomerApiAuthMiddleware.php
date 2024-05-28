@@ -10,6 +10,7 @@ use App\Utils\JsonResponses;
 
 class CustomerApiAuthMiddleware extends ApiAuthMiddleware
 {
+    #[\Override]
     public function handle(Request $request, Closure $next): Response
     {
         $customerId = $request->route('customer_id');

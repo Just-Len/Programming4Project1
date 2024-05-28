@@ -10,6 +10,7 @@ use App\Utils\JsonResponses;
 
 class LodgingApiAuthMiddleware extends ApiAuthMiddleware
 {
+    #[\Override]
     public function handle(Request $request, Closure $next): Response
     {
         $lodgingId = $request->route('lodging_id');

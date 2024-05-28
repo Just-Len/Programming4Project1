@@ -11,11 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Do not attempt to create the table, only update the existing one, adding the new columns
-        Schema::table('user', function (Blueprint $table) {
-            $table->rememberToken();
-        });
-
         Schema::create('password_reset_token', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
@@ -24,7 +19,7 @@ return new class extends Migration
 
         Schema::create('session', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_name')->nullable()->index();
+            $table->foreignId('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');
@@ -37,7 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropColumns('user', 'remember_token');
         Schema::dropIfExists('password_reset_token');
         Schema::dropIfExists('session');
     }
