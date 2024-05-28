@@ -173,9 +173,9 @@ class LodgingController
 
     public function uploadImage(Request $request)
     {
-        $isValid = validator($request->all(), ['file0' => 'required|image|mimes:jpg,png,jpeg,svg']);
+        $isValid = validator($request->all(), ['file' => 'required|image|mimes:jpg,png,jpeg,svg']);
         if (!$isValid->fails()) {
-            $image = $request->file('file0');
+            $image = $request->file('file');
             $filename = Str::uuid() . "." . $image->getClientOriginalExtension();
             Storage::disk('lodgings')->put($filename, File::get($image));
             $response = JsonResponses::created(
@@ -198,8 +198,8 @@ class LodgingController
         if (isset($filename)) {
             $exist = Storage::disk('lodgings')->exists($filename);
             if ($exist) {
-                $file = Storage::disk('lodgings')->get($filename);
-                $response = JsonResponses::ok('La imagen existe');
+                $filePath = Storage::disk('lodgings')->path($filename);
+                $response = response()->file($filePath);
             } else {
                 $response = JsonResponses::notFound(
                     'La imagen no existe'

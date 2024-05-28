@@ -319,9 +319,9 @@ class UserController
 
     public function uploadImage(Request $request)
     {
-        $isValid = validator($request->all(), ['file0' => 'required|image|mimes:jpg,png,jpeg,svg']);
+        $isValid = validator($request->all(), ['file' => 'required|image|mimes:jpg,png,jpeg,svg']);
         if (!$isValid->fails()) {
-            $image = $request->file('file0');
+            $image = $request->file('file');
             $filename = Str::uuid() . "." . $image->getClientOriginalExtension();
             Storage::disk('users')->put($filename, File::get($image));
 
@@ -345,8 +345,8 @@ class UserController
         if (isset($filename)) {
             $exist = Storage::disk('users')->exists($filename);
             if ($exist) {
-                $file = Storage::disk('users')->get($filename);
-                $response = JsonResponses::ok('La imagen existe');
+                $filePath = Storage::disk('users')->path($filename);
+                $response = response()->file($filePath);
             } else {
                 $response = JsonResponses::notFound(
                     'La imagen no existe'
