@@ -1,0 +1,30 @@
+
+  <div class="container">
+    @if (status === 0) {
+        <p class="fa fa-warning" aria-hidden="true">Usuario y/o contraseña incorrectos</p>
+    }
+    <div class="login-container">
+      <h2>Iniciar Sesión</h2>
+      <form #loginForm="ngForm" (ngSubmit)="onsubmit(loginForm)">
+
+        <i class="fas fa-user"></i>
+
+        <div class="input-field">
+          <input type="text" placeholder="Usuario" name="username" #name="ngModel" [(ngModel)]="user.name" required >
+        </div>
+
+        <i class="fas fa-lock"></i>
+
+        <div class="input-field">
+          <input type="password" placeholder="Contraseña" name="password" #password="ngModel" [(ngModel)]="user.password" required>
+        </div>
+        <div class="buttons">
+          <button type="submit">Iniciar Sesión</button>
+          <p>No tienes una cuenta? Registrate!</p>
+          <button type="button" [routerLink]="['/register']"> Registrarse</button>  
+        </div>
+        
+      </form>
+    </div>
+  <router-outlet></router-outlet>
+  </div>

@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="register-container">
+        <h2>Registro</h2>
+        <form>
+          <i class="fas fa-user"></i>
+          <div class="input-field">
+            <input type="text" placeholder="Usuario" required>
+          </div>
+          <i class="fas fa-envelope"></i>
+          <div class="input-field">
+            <input type="email" placeholder="Correo electrónico" required>
+          </div>
+          <i class="fas fa-lock"></i>
+          <div class="input-field">
+            <input type="password" placeholder="Contraseña" required>
+          </div>
+          <div class="buttons">
+            <button type="submit">Registrarse</button>
+            <p>Ya tienes una cuenta? Inicia Sesion!</p>
+            <button type="button" [routerLink]="['/login']">Iniciar Sesion</button>
+          </div>
+          
+        </form>
+      </div>
+</div>
