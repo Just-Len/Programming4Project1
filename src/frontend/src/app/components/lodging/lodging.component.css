@@ -1,0 +1,47 @@
+.lodgings_container {
+    column-gap: 2em;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 2em;
+    width: 100vw;
+}
+
+.lodging_card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 20em;
+}
+
+.lodging_image {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.lodging_info {
+    padding: 20px;
+    flex: 1;
+}
+
+.lodging_name {
+    margin-top: 0;
+    font-size: 1.5em;
+}
+
+.lodging_address, .lodging_description, .lodging_details {
+    margin: 10px 0;
+}
+
+.price_per_night {
+    font-weight: bold;
+    color: #2a9d8f;
+}
+
+.rooms_available, .lessor {
+    display: block;
+    margin-top: 5px;
+}
