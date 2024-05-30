@@ -24,7 +24,22 @@ export class UserService{
         }
         return this._http.post(this.urlAPI+'user/login', params, options)
     }
-    getIdentifyFromApi():Observable<any>{
+    
+    getIdentifyFromApi(): Observable<any> {
+        const bearerToken = sessionStorage.getItem('token');
+        let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+        
+        if (bearerToken) {
+            headers = headers.set('Authorization', `Bearer ${bearerToken}`);
+        }
+        
+        const options = {
+            headers
+        };
+        return this._http.get(this.urlAPI + 'user/identity', options);
+    }
+
+    /*getIdentifyFromApi():Observable<any>{
         let headers;
         let bearerToken=sessionStorage.getItem('token');
         if(bearerToken){
@@ -37,5 +52,5 @@ export class UserService{
             headers
         }
         return this._http.get(this.urlAPI+'user/identity', options);
-    }
+    }*/
 }
