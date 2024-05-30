@@ -1,21 +1,20 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Injectable, INJECTOR } from "@angular/core";
-import { server } from "./global";
+import { HttpHeaders } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 import { User } from "../models/user";
-import { Observable } from "rxjs";
+import { Observable, map } from "rxjs";
+import { BaseService } from "./base.service";
 
 
 @Injectable({
     providedIn:'root'
 })
-export class UserService{
-    private urlAPI: string
-    constructor(
-        private _http:HttpClient
-    ){
-        this.urlAPI=server.url
+export class UserService extends BaseService {
+
+    getUsers(): Observable<User[]> {
+        return this.get("user");
     }
-    login(user:User):Observable<any>{
+
+    login(user:User): Observable<any> {
         let userJson=JSON.stringify(user);
         let params='data=' +userJson
         let headers = new HttpHeaders().set('Content-type', 'application/x-www-form-urlencoded')
@@ -24,6 +23,7 @@ export class UserService{
         }
         return this._http.post(this.urlAPI+'user/login', params, options)
     }
+
     getIdentityFromApi(): Observable<any> {
         const bearerToken = sessionStorage.getItem('token');
         let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
