@@ -29,7 +29,7 @@ export class LoginComponent {
                 sessionStorage.setItem("token", response);
                 this._userService.getIdentityFromApi().subscribe({
                     next: (response: any) => {
-                        sessionStorage.setItem('token', response);
+                        sessionStorage.setItem('identity', response);
                     },
                     error: (error: Error) => {
                         console.log('Error al obtener la identidad', error);
