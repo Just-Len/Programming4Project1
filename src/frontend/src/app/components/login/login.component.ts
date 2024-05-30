@@ -22,28 +22,27 @@ export class LoginComponent {
     this.user =  new User("","","","","","",1,"")
     
   }
-  onsubmit(form:any){
-    //console.log(this.user.name);
-    //console.log(this.user.password)
+  onsubmit(form: any) {
     this._userService.login(this.user).subscribe({
-      next:(response:any)=>{
-        if(response.status!=401){
-          sessionStorage.setItem("token", response);
-          this._userService.getIdentifyFromApi().subscribe({
-            next:(response:any)=>
-              {
-                sessionStorage.setItem('identity', response);
-              },
-              error:(error:Error)=>{
-                console.log('erroreeeee')
-              }
-          })
-        }else{
-          this.status=0;
+        next: (response: any) => {
+            if (response.status != 401) {
+                sessionStorage.setItem("token", response);
+                this._userService.getIdentityFromApi().subscribe({
+                    next: (response: any) => {
+                        sessionStorage.setItem('token', response);
+                    },
+                    error: (error: Error) => {
+                        console.log('Error al obtener la identidad', error);
+                    }
+                });
+            } else {
+                this.status = 0;
+            }
+        },
+        error: (err: any) => {
+            console.log('Error en el login', err);
         }
-      },error:(err:any)=>{
-        
-      }
-    })
-  }
+    });
+}
+
 }
