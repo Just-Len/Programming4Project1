@@ -32,6 +32,7 @@ export class LoginComponent {
                     next: (response: any) => {
                         sessionStorage.setItem('token', response);
                         sessionStorage.setItem('role', response.role_id);
+                        sessionStorage.setItem('identity', response);
                         this.app.loging();
                     },
                     error: (error: Error) => {
