@@ -13,10 +13,10 @@ class ApiAuthMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
+        $user = null;
         $userName = $request->route('name');
-        $user = User::find($userName);
-        
-        if (!$user) {
+        if($userName && !($user = User::find($userName)))
+        {
             return JsonResponses::notFound('No existe un usuario con el nombre especificado.');
         }
     
