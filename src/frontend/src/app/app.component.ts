@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component} from '@angular/core';
 import { Router, RouterLink, RouterOutlet, NavigationEnd} from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -10,6 +10,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
+  role = 0;
+  isLogged = false;
   title = 'frontend';
   currentRoute: String = '';
   constructor(private router: Router) {
@@ -18,5 +20,10 @@ export class AppComponent {
         this.currentRoute = event.url;
       }
     });
+  }
+
+  loging(){
+    this.role = parseInt(sessionStorage.getItem('role') as string);
+    this.isLogged = true;
   }
 }

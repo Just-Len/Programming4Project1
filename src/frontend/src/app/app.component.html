@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
+@if (isLogged) {
   <div class="navbar">
     <a [routerLink]="['/home']" class="bold">Restify</a>
-    <a [routerLink]="['/user']"><i class="fas fa-users"></i> Usuarios</a>
+    @if(role === 1){<a [routerLink]="['/user']"><i class="fas fa-users"></i> Usuarios</a>}
     <a [routerLink]="['/lodging']"><i class="fas fa-calendar-alt"></i> Reservas</a>
     <div class="dropdown right">
       <a class="dropbtn"><i class="fas fa-cog"></i> Configuración</a>
@@ -19,6 +20,7 @@
       </div>
     </div>
   </div>
+}
 <router-outlet></router-outlet>
 </body>
 </html>
