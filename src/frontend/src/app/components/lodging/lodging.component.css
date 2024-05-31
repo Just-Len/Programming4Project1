@@ -1,3 +1,17 @@
+.buttons_container {
+    column-gap: 0.5em;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 1em;
+    row-gap: 0.5em;
+}
+
+.buttons_container > * {
+    flex: 1;
+    padding: 0.5em 3em;
+}
+
 .lodgings_container {
     column-gap: 2em;
     display: flex;
@@ -37,11 +51,11 @@
 }
 
 .price_per_night {
-    font-weight: bold;
     color: #2a9d8f;
 }
 
-.rooms_available, .lessor {
+.rooms_available {
+    font-weight: bold;
     display: block;
     margin-top: 5px;
 }

@@ -29,4 +29,19 @@ export class BaseService {
                 })
             );
     }
+
+    delete(route: string, requiresToken: boolean, data: any): Observable<AppResponse> {
+        let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+
+        if (requiresToken) {
+            const bearerToken = sessionStorage.getItem('token');
+
+            if (bearerToken) {
+                headers = headers.set('Authorization', `Bearer ${bearerToken}`);
+            }
+        }
+
+        const options = { headers };
+        return this._http.delete<AppResponse>(this.urlAPI + route, options);
+    }
 }

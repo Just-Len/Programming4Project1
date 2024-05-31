@@ -9,7 +9,8 @@ import { AsyncPipe, CurrencyPipe, NgFor } from '@angular/common'
   standalone: true,
   imports: [AsyncPipe, CurrencyPipe, NgFor],
   templateUrl: './user.component.html',
-  styleUrl: './user.component.css'
+  styleUrl: './user.component.css',
+  providers: [UserService]
 })
 export class UserComponent {
     Users!: Observable<User[]>;
