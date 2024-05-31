@@ -1,1 +1,22 @@
-<p>user works!</p>
+<h1>Usuarios</h1>
+
+<div class="users_container">
+    <table>
+        <tr>
+            <th>Accion</th>
+            <th>Usuario</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Correo</th>
+            <th>Telefono</th>
+        </tr>
+        <div *ngFor="let User of Users | async">
+            <th><input type="checkbox"></th>
+            <th>{{ User.name }}</th>
+            <th>{{ User.first_name }}</th>
+            <th>{{ User.last_name }}</th>
+            <th>{{ User.email_address }}</th>
+            <th>{{ User.phone_numer }}</th>
+        </div>
+    </table>
+</div>
