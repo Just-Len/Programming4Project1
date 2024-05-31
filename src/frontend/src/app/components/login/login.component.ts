@@ -30,7 +30,6 @@ export class LoginComponent {
                 sessionStorage.setItem("token", response);
                 this._userService.getIdentityFromApi().subscribe({
                     next: (response: any) => {
-                        sessionStorage.setItem('token', response);
                         sessionStorage.setItem('role', response.role_id);
                         sessionStorage.setItem('identity', response);
                         this.app.loging();

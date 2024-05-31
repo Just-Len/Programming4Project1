@@ -13,12 +13,12 @@
 }
 
 .lodgings_container {
-    column-gap: 2em;
+    column-gap: 1em;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    row-gap: 2em;
+    row-gap: 1em;
     width: 100vw;
 }
 

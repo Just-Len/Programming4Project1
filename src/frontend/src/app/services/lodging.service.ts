@@ -4,7 +4,6 @@ import { BaseService } from "./base.service";
 import { Lodging } from "../models/lodging";
 import { AppResponse } from "../models/app_response";
 
-
 @Injectable({
     providedIn:'root'
 })

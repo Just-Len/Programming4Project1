@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { server } from "./global";
-import { Observable, map } from "rxjs";
+import { Observable, catchError, map, of } from "rxjs";
 import { AppResponse } from "../models/app_response";
 
 
@@ -32,16 +32,34 @@ export class BaseService {
 
     delete(route: string, requiresToken: boolean, data: any): Observable<AppResponse> {
         let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+        headers = this.appendTokenIfNeeded(requiresToken, headers);
 
+        const options = { headers };
+        return this._http.delete<any>(this.urlAPI + route, options).pipe(
+            map(response => {
+                    if (!AppResponse.success(response as AppResponse)) {
+                        return response;
+                    }
+                    
+                    return response.error as AppResponse;
+                }
+            ),
+            catchError((response: any, caught: Observable<AppResponse>) => {
+                return of(response.error as AppResponse);
+            })
+        );
+    }
+    
+    private appendTokenIfNeeded(requiresToken: boolean, headers: HttpHeaders): HttpHeaders
+    {
         if (requiresToken) {
             const bearerToken = sessionStorage.getItem('token');
 
             if (bearerToken) {
-                headers = headers.set('Authorization', `Bearer ${bearerToken}`);
+                headers = headers.set("Authorization", `Bearer ${bearerToken}`);
             }
         }
 
-        const options = { headers };
-        return this._http.delete<AppResponse>(this.urlAPI + route, options);
+        return headers;
     }
 }
