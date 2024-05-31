@@ -2,6 +2,7 @@ import { User } from "./user";
 
 export class Lodging {
     constructor(
+        public lodging_id: number,
         public name: string,
         public description: string,
         public image: string,

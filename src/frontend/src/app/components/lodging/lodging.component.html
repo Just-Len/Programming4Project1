@@ -12,5 +12,10 @@
             <span class="rooms_available">{{ lodging.available_rooms}} habitaciones disponibles</span>
             </div>
         </div>
+        <div class="buttons_container">
+            <button>Reserva</button>
+            <button>Editar</button>
+            <button (click)="deleteLodging(lodging.lodging_id)">Eliminar</button>
+        </div>
     </div>
 </div>
