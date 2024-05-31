@@ -8,6 +8,15 @@ use App\Utils\JsonResponses;
 
 class CustomerController
 {
+    public function index()
+    {
+        $data = Customer::all();
+        return JsonResponses::ok(
+            "Todos los registros de los clientes",
+            $data,
+        );
+    }
+
     public function show($id = null)
     {
         if (!$id) {

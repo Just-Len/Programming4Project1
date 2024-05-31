@@ -17,6 +17,14 @@ use App\Utils\JsonResponses;
 
 class UserController
 {
+    public function indexAdministrator(){
+        $data = Administrator::all();
+        return JsonResponses::ok(
+        "Todos los registros de los arrendadores",
+        $data,
+        );
+    }
+
     public function index()
     {
         return JsonResponses::ok(

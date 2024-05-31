@@ -7,6 +7,14 @@ use App\Utils\JsonResponses;
 
 class LessorController
 {
+    public function index(){
+        $data = Lessor::all();
+        return JsonResponses::ok(
+            "Todos los registros de los arrendadores",
+            $data,
+        );
+    }
+
     public function show($id = null)
     {
         if (!$id) {
