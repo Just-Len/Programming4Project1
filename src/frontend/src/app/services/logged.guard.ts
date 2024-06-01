@@ -1,22 +1,24 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, Router, MaybeAsync, GuardResult } from '@angular/router';
+import { AppState } from '../models/app_state';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoggedGuard {
-  constructor(private router: Router) {}
+  constructor(
+    private appState: AppState,
+    private router: Router)
+    {}
 
+  // https://angular.dev/api/router/CanActivateFn 
   canActivate(
     next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): boolean | UrlTree {
-      const token = sessionStorage.getItem('token');
-      const isLoggedIn = token !== null;
-
-      if (!isLoggedIn){
+    state: RouterStateSnapshot): MaybeAsync<GuardResult> {
+      if (!this.appState.isUserLogged){
         this.router.navigate(['/login']);
       }
 
-      return isLoggedIn;
+      return this.appState.isUserLogged;
   }
 }

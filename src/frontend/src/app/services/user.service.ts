@@ -6,31 +6,26 @@ import { BaseService } from "./base.service";
 
 
 @Injectable({
-    providedIn:'root'
+    providedIn: 'root'
 })
 export class UserService extends BaseService {
-
     getUsers(): Observable<User[]> {
         return this.get("user");
     }
 
-    login(user:User): Observable<any> {
-        let userJson=JSON.stringify(user);
-        let params='data=' +userJson
+    login(user: User): Observable<any> {
+        let userJson = JSON.stringify(user);
+        let params = 'data=' + userJson
         let headers = new HttpHeaders().set('Content-type', 'application/x-www-form-urlencoded')
-        let options={
+        let options = {
             headers
         }
-        return this._http.post(this.urlAPI+'user/login', params, options)
+        return this._http.post(this.urlAPI + 'user/login', params, options)
     }
 
-    getIdentityFromApi(): Observable<any> {
-        const bearerToken = sessionStorage.getItem('token');
+    getIdentityFromApi(token: string): Observable<any> {
         let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-
-        if (bearerToken) {
-            headers = headers.set('Authorization', `Bearer ${bearerToken}`);
-        }
+        headers = headers.set('Authorization', `Bearer ${token}`);
 
         const options = { headers };
         return this._http.get(this.urlAPI + 'user/identity', options);

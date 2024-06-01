@@ -6,7 +6,7 @@ import { ErrorComponent } from './components/error/error.component';
 import { LodgingComponent } from './components/lodging/lodging.component';
 import { ConfigurationComponent } from './components/configuration/configuration.component';
 import { RegisterComponent } from './components/register/register.component';
-import { LoggedGuard} from './services/logged.guard';
+import { LoggedGuard } from './services/logged.guard';
 
 export const routes: Routes = [
     {path: 'lodging', component: LodgingComponent, canActivate: [LoggedGuard]},

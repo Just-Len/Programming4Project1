@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { server } from "./global";
 import { Observable, catchError, map, of } from "rxjs";
 import { AppResponse } from "../models/app_response";
+import { AppState } from "../models/app_state";
 
 
 @Injectable({
@@ -12,7 +13,8 @@ export class BaseService {
     protected urlAPI: string
 
     constructor(
-        protected _http:HttpClient
+        protected _appState: AppState,
+        protected _http : HttpClient
     ){
         this.urlAPI = server.url
     }
@@ -53,7 +55,7 @@ export class BaseService {
     private appendTokenIfNeeded(requiresToken: boolean, headers: HttpHeaders): HttpHeaders
     {
         if (requiresToken) {
-            const bearerToken = sessionStorage.getItem('token');
+            const bearerToken = this._appState.token;
 
             if (bearerToken) {
                 headers = headers.set("Authorization", `Bearer ${bearerToken}`);

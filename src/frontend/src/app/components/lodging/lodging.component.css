@@ -1,3 +1,8 @@
+mat-drawer {
+    background-color: var(--color-secondary);
+    padding: 2em;
+}
+
 .buttons_container {
     column-gap: 0.5em;
     display: flex;

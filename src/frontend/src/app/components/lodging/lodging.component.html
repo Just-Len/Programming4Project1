@@ -1,21 +1,34 @@
-<h1>Alojamientos</h1>
+<mat-drawer-container [hasBackdrop]="true">
+    <mat-drawer #sidebar mode="over" position="end">
+        <h2>Reserva en {{selectedLodging?.name}}</h2>
+        <p>Días de reserva</p>
+        <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate placeholder="Fecha de inicio">
+            <input matEndDate placeholder="Fecha de finalización">
+        </mat-date-range-input>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-drawer>
+    <mat-drawer-content>
+        <h1>Alojamientos</h1>
 
-<div class="lodgings_container">
-    <div *ngFor="let lodging of lodgings | async" class="lodging_card">
-        <img [src]="lodging.image" alt="{{lodging.name}}" class="lodging_image">
-        <div class="lodging_info">
-            <h2 class="lodging_name">{{ lodging.name }}</h2>
-            <p class="lodging_address">{{ lodging.address }}</p>
-            <p class="lodging_description">{{ lodging.description }}</p>
-            <div class="lodging_details">
-            <span class="price_per_night">Precio por noche: {{ lodging.per_night_price | currency }}</span>
-            <span class="rooms_available">{{ lodging.available_rooms}} habitaciones disponibles</span>
+        <div class="lodgings_container">
+            <div *ngFor="let lodging of lodgings | async" class="lodging_card">
+                <img [src]="lodging.image" alt="{{lodging.name}}" class="lodging_image">
+                <div class="lodging_info">
+                    <h2 class="lodging_name">{{ lodging.name }}</h2>
+                    <p class="lodging_address">{{ lodging.address }}</p>
+                    <p class="lodging_description">{{ lodging.description }}</p>
+                    <div class="lodging_details">
+                    <span class="price_per_night">Precio por noche: {{ lodging.per_night_price | currency }}</span>
+                    <span class="rooms_available">{{ lodging.available_rooms}} habitaciones disponibles</span>
+                    </div>
+                </div>
+                <div class="buttons_container">
+                    <button (click)="bookLodging(lodging)">Reserva</button>
+                    <button *ngIf="canEdit">Editar</button>
+                    <button *ngIf="canEdit" (click)="deleteLodging(lodging.lodging_id)">Eliminar</button>
+                </div>
             </div>
         </div>
-        <div class="buttons_container">
-            <button>Reserva</button>
-            <button>Editar</button>
-            <button (click)="deleteLodging(lodging.lodging_id)">Eliminar</button>
-        </div>
-    </div>
-</div>
+    </mat-drawer-content>
+</mat-drawer-container>
