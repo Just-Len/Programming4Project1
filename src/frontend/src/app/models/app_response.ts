@@ -1,6 +1,7 @@
 export class AppResponse
 {
     constructor(
+        public cat: string,
         public status: number,
         public message: string,
         public data: any[]
