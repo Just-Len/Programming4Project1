@@ -89,3 +89,4 @@ body {
 .dropdown:hover .dropdown-content {
     display: block;
 }
+html, body { height: 100%; }
