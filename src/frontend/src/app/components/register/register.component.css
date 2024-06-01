@@ -1,3 +1,10 @@
+/*
+  :host refers to the component itself, I guess
+*/
+:host {
+  margin: auto;
+}
+
 .container {
     display: flex;
     justify-content: center;
