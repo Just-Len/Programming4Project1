@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { UserService } from '../../services/user.service';
-import { Observable } from 'rxjs';
 import { User } from '../../models/user';
-import { AsyncPipe, CurrencyPipe, NgFor } from '@angular/common'
+import { AsyncPipe, CurrencyPipe, NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-user',
@@ -12,12 +11,13 @@ import { AsyncPipe, CurrencyPipe, NgFor } from '@angular/common'
   styleUrl: './user.component.css',
   providers: [UserService]
 })
-export class UserComponent {
-    Users!: Observable<User[]>;
+export class UserComponent implements OnInit{
+    Users: User[] = [];
     public constructor(private _userService: UserService)
     { }
 
     ngOnInit(): void{
-      this.Users = this._userService.get("user");
+      this._userService.load();
+      this.Users = this._userService.getUsers();
     }
 }

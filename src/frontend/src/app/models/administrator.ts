@@ -1,4 +1,4 @@
-export class User {
+export class Administrator {
     constructor(
         public name: string,
         public first_name: string,
@@ -7,8 +7,7 @@ export class User {
         public role_id: string,
         public email_address: string,
         public phone_number: number,
-        public image: string) {
-    }
+    ) {}
 
 
 }
