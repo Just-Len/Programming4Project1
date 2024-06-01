@@ -19,8 +19,11 @@ export class BaseService {
         this.urlAPI = server.url
     }
 
-    get<T>(route: string): Observable<T> {
-        return this._http.get<AppResponse>(this.urlAPI + route).pipe(
+    get<T>(route: string, requiresToken = false): Observable<T> {
+        const headers = this.appendTokenIfNeeded(requiresToken, new HttpHeaders());
+        const options = { headers };
+
+        return this._http.get<AppResponse>(this.urlAPI + route, options).pipe(
             map((response: AppResponse) =>
                 {
                     if (AppResponse.success(response)) {
@@ -32,11 +35,11 @@ export class BaseService {
             );
     }
 
-    delete(route: string, requiresToken: boolean, data: any): Observable<AppResponse> {
+    delete(route: string, requiresToken: boolean, body: any): Observable<AppResponse> {
         let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
         headers = this.appendTokenIfNeeded(requiresToken, headers);
 
-        const options = { headers };
+        const options = { headers, body };
         return this._http.delete<any>(this.urlAPI + route, options).pipe(
             map(response => {
                     if (!AppResponse.success(response as AppResponse)) {

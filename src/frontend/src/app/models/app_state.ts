@@ -12,12 +12,12 @@ export class AppState
         return this.token !== null;
     }
 
-    public get identity() {
-        return sessionStorage.getItem('identity');
+    public get userName() {
+        return sessionStorage.getItem('user_name');
     }
 
-    public set identity(identity: string | null) {
-        this.setOrRemoveFromSessionStorage('identity', identity);
+    public set userName(userName: string | null) {
+        this.setOrRemoveFromSessionStorage('user_name', userName);
     }
 
     public get role() {
@@ -42,9 +42,9 @@ export class AppState
         this.setOrRemoveFromSessionStorage('token', token);
     }
 
-    logIn(token: string, identity: string, role: number): void {
+    logIn(token: string, userName: string, role: number): void {
         this.token = token;
-        this.identity = identity;
+        this.userName = userName;
         this.role = role;
 
         this.router.navigate(["/home"]);
@@ -53,9 +53,10 @@ export class AppState
     logOut(): void {
         this.role = null;
         this.token = null;
-        this.identity = null;
+        this.userName = null;
 
         this.router.navigate(["/home"]);
+        // TODO: Call log out API route
     }
 
     private setOrRemoveFromSessionStorage(name: string, value: any) {

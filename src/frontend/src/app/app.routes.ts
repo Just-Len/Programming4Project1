@@ -6,14 +6,16 @@ import { ErrorComponent } from './components/error/error.component';
 import { LodgingComponent } from './components/lodging/lodging.component';
 import { ConfigurationComponent } from './components/configuration/configuration.component';
 import { RegisterComponent } from './components/register/register.component';
-import { LoggedGuard } from './services/logged.guard';
+import { AdministratorGuard } from './services/administrator.guard';
+import { AlreadyLoggedInGuard } from './services/already_logged_in.guard';
+import { LogInGuard } from './services/login.guard';
 
 export const routes: Routes = [
-    {path: 'lodging', component: LodgingComponent, canActivate: [LoggedGuard]},
-    {path: 'login', component: LoginComponent},
-    {path: 'register', component: RegisterComponent},
+    {path: 'lodging', component: LodgingComponent, canActivate: [LogInGuard]},
+    {path: 'login', component: LoginComponent, canActivate: [AlreadyLoggedInGuard]},
+    {path: 'register', component: RegisterComponent, canActivate: [AlreadyLoggedInGuard]},
     {path: 'home', component: HomeComponent},
-    {path: 'user', component: UserComponent, canActivate: [LoggedGuard]},
+    {path: 'user', component: UserComponent, canActivate: [LogInGuard, AdministratorGuard]},
     {path: 'configuration', component:ConfigurationComponent},
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     {path: '**', component: ErrorComponent}

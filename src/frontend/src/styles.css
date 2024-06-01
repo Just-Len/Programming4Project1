@@ -17,6 +17,9 @@ body {
     background-color: var(--color-primary);
     background-repeat: no-repeat;
     background-size: cover;
+    display: grid;
+    height: 100vh;
+    grid-template-rows: min-content min-content auto;
     text-align: center;
     margin: 0;
     padding: 0;
@@ -89,4 +92,3 @@ body {
 .dropdown:hover .dropdown-content {
     display: block;
 }
-html, body { height: 100%; }

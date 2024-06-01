@@ -6,9 +6,14 @@ export class User {
         public password: string,
         public role_id: string,
         public email_address: string,
-        public phone_number: number,
-        public image: string) {
+        public phone_number: string,
+        public image: string,
+        public person_id: number | null = null) {
     }
+}
 
-
+export enum UserRole {
+    Administrator = 1,
+    Customer = 2, 
+    Lessor = 3,
 }

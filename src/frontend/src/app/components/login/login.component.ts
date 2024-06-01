@@ -4,6 +4,7 @@ import { User } from '../../models/user';
 import { UserService } from '../../services/user.service';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AppState } from '../../models/app_state';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
     selector: 'app-login',
@@ -21,29 +22,30 @@ export class LoginComponent {
         private _userService: UserService
     ) {
         this.status = -1;
-        this.user = new User("", "", "", "", "", "", 1, "")
+        this.user = new User("", "", "", "", "", "", "1", "")
     }
-    onsubmit(form: any) {
-        this._userService.login(this.user).subscribe({
-            next: (response: any) => {
-                const token = response;
-                if (response.status != 401) {
-                    this._userService.getIdentityFromApi(token).subscribe({
-                        next: (response: any) => {
-                            this._appState.logIn(token, response, parseInt(response.role_id));
-                        },
-                        error: (error: Error) => {
-                            console.log('Error al obtener la identidad', error);
-                        }
-                    });
-                } else {
-                    this.status = 0;
-                }
-            },
-            error: (err: any) => {
-                console.log('Error en el login', err);
+    async onsubmit(form: any) {
+        let response: any;
+        try {
+            response = await firstValueFrom( this._userService.login(this.user));
+        }
+        catch (error) {
+            console.log('Error en el login', error);
+        }
+
+        if (response.status != 401) {
+            const token = response;
+            try {
+                const identity = await firstValueFrom(this._userService.getIdentityFromApi(response));
+                this._appState.logIn(token, identity.iss, identity.role_id);
             }
-        });
+            catch (error) {
+                console.log('Error al obtener la identidad', error);
+            }
+        }
+        else {
+            this.status = 0;
+        }
     }
 
 }

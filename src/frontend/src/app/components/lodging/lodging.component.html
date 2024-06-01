@@ -1,12 +1,16 @@
 <mat-drawer-container [hasBackdrop]="true">
     <mat-drawer #sidebar mode="over" position="end">
         <h2>Reserva en {{selectedLodging?.name}}</h2>
-        <p>Días de reserva</p>
-        <mat-date-range-input [rangePicker]="picker">
-            <input matStartDate placeholder="Fecha de inicio">
-            <input matEndDate placeholder="Fecha de finalización">
-        </mat-date-range-input>
-        <mat-date-range-picker #picker></mat-date-range-picker>
+        <mat-form-field>
+            <mat-label>Seleccione las fechas de reserva</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+                <input matStartDate placeholder="Fecha de inicio">
+                <input matEndDate placeholder="Fecha de finalización">
+            </mat-date-range-input>
+
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
     </mat-drawer>
     <mat-drawer-content>
         <h1>Alojamientos</h1>
@@ -24,9 +28,9 @@
                     </div>
                 </div>
                 <div class="buttons_container">
-                    <button (click)="bookLodging(lodging)">Reserva</button>
-                    <button *ngIf="canEdit">Editar</button>
-                    <button *ngIf="canEdit" (click)="deleteLodging(lodging.lodging_id)">Eliminar</button>
+                    <button *ngIf="!isLessor" (click)="bookLodging(lodging)">Reserva</button>
+                    <button *ngIf="isLessor">Editar</button>
+                    <button *ngIf="isLessor" (click)="deleteLodging(lodging.lodging_id)">Eliminar</button>
                 </div>
             </div>
         </div>
