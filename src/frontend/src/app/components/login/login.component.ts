@@ -4,6 +4,7 @@ import { User } from '../../models/user';
 import { UserService } from '../../services/user.service';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AppState } from '../../models/app_state';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
     selector: 'app-login',
@@ -13,12 +14,16 @@ import { AppState } from '../../models/app_state';
     styleUrl: './login.component.css',
     providers: [UserService]
 })
+
+
 export class LoginComponent {
     public status: number;
     public user: User;
     constructor(
+        
         private _appState: AppState,
-        private _userService: UserService
+        private _userService: UserService,
+        private _notificationService: NotificationService
     ) {
         this.status = -1;
         this.user = new User("", "", "", "", "", "", 1, "")
@@ -38,9 +43,12 @@ export class LoginComponent {
                     });
                 } else {
                     this.status = 0;
+                    this._notificationService.show("Usuario y/o contraseña incorrectos")
                 }
             },
             error: (err: any) => {
+                this.status = 0;
+                this._notificationService.show("Usuario y/o contraseña incorrectos")
                 console.log('Error en el login', err);
             }
         });

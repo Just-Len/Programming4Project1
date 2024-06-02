@@ -1,8 +1,6 @@
 
   <div class="container">
-    @if (status === 0) {
-        <p class="fa fa-warning" aria-hidden="true">Usuario y/o contraseña incorrectos</p>
-    }
+    
     <div class="login-container">
       <h2>Iniciar Sesión</h2>
       <form #loginForm="ngForm" (ngSubmit)="onsubmit(loginForm)">

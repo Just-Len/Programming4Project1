@@ -2,11 +2,13 @@ import { Component } from '@angular/core';
 import { Router, RouterLink, RouterOutlet, NavigationEnd} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AppState } from './models/app_state';
+import { NotificationService } from './services/notification.service';
+import { NotificationComponent } from './components/notification/notification.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink],
+  imports: [CommonModule, RouterOutlet, RouterLink, NotificationComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

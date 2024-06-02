@@ -7,17 +7,21 @@
   p{
     font-size: 14px;
   }
-  
-  .register-container {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      width: 300px;
-      backdrop-filter: blur(59px);
-      margin: 0 auto;
-      margin-top: 20px;
+  h2{
+    color:#004d8b
   }
+  .register-container {
+
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 5px 15px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    backdrop-filter: blur(20px);
+    margin: 0 auto;
+    margin-top: 3%;
+}
+
 
   h2 {
     text-align: center;
@@ -29,7 +33,7 @@
     margin: 10px 0;
     border: none;
     border-bottom: 2px solid #AFB2B7;
-    border-radius: 20px;
+    border-radius: 10px;
     color: #000000;
     font-size: 16px;
   }
@@ -58,7 +62,7 @@
     cursor: pointer;
   }
   .buttons{
-    margin-top: 20px;
+    margin-top: px;
   }
   
   button:hover {
