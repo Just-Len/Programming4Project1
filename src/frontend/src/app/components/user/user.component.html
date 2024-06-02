@@ -1,7 +1,44 @@
-<h1>Usuarios</h1>
-
 <div class="users_container">
-    <table>
+    <h1>Usuarios</h1>
+
+    <table mat-table [dataSource]="users">
+        <ng-container matColumnDef="user_name">
+            <th mat-header-cell *matHeaderCellDef> Usuario </th>
+            <td mat-cell *matCellDef="let user"> {{user.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="first_name">
+            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+            <td mat-cell *matCellDef="let user"> {{user.first_name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="last_name">
+            <th mat-header-cell *matHeaderCellDef> Apellido </th>
+            <td mat-cell *matCellDef="let user"> {{user.last_name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="role">
+            <th mat-header-cell *matHeaderCellDef> Rol </th>
+            <td mat-cell *matCellDef="let user"> {{user.role_id}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="image">
+            <th mat-header-cell *matHeaderCellDef> Imagen </th>
+            <td mat-cell *matCellDef="let user"> <img [src]="user.image" alt="" class="image-user"></td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr
+        mat-row
+        (click)="view(selectedUser)"
+        *matRowDef="let selectedUser; columns: columnsToDisplay;"
+        ></tr>
+    </table>
+    
+    <mat-paginator [pageSizeOptions]="[5]"
+    aria-label="Select page of user">
+    </mat-paginator>
+    <!-- <table>
         <tr>
             <th>Accion</th>
             <th>Usuario</th>
@@ -11,14 +48,14 @@
             <th>Correo</th>
             <th>Telefono</th>
         </tr>
-        @for (User of Users; track User.name) {
-            <th><input type="checkbox"></th>
-            <th>{{ User.name }}</th>
-            <th>{{ User.first_name }}</th>
-            <th>{{ User.last_name }}</th>
-            <th>{{ User.role_id }}</th>
-            <th>{{ User.email_address }}</th>
-            <th>{{ User.phone_number }}</th>
-        }
-    </table>
+        <div *ngFor="let user of users | async">
+            <td><input type="checkbox"></td>
+            <td>{{ user.name }}</td>
+            <td >{{ user.first_name }}</td>
+            <td>{{ user.last_name }}</td>
+            <td>{{ user.role_id }}</td>
+            <td>{{ user.email_address }}</td>
+            <td>{{ user.phone_number }}</td>
+        </div>
+    </table> -->
 </div>
