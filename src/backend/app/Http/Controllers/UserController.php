@@ -20,8 +20,8 @@ class UserController
     public function indexAdministrator(){
         $data = Administrator::all();
         return JsonResponses::ok(
-        "Todos los registros de los arrendadores",
-        $data,
+            "Todos los registros de los arrendadores",
+            $data,
         );
     }
 
@@ -202,7 +202,6 @@ class UserController
     }
     public function updatePartial(Request $request, $name)
     {
-
         $user = User::where('name', $name)->first();
 
         if (!$user) {

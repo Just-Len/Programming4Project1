@@ -1,6 +1,20 @@
+mat-drawer-container {
+    margin-top: 2em;
+}
+
 mat-drawer {
     background-color: var(--color-secondary);
     padding: 2em;
+}
+
+mat-form-field {
+    width: 20em;
+}
+
+.button {
+    display: block;
+    margin: auto;
+    padding: 0.5em 3em;
 }
 
 .buttons_container {

@@ -55,6 +55,27 @@ export class BaseService {
         );
     }
     
+    post(route: string, requiresToken: boolean, body: any): Observable<AppResponse> {
+        let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+        headers = this.appendTokenIfNeeded(requiresToken, headers);
+
+        const realBody = `data=${JSON.stringify(body)}`; // just why do I have to do this?
+        const options = { headers };
+        return this._http.post<any>(this.urlAPI + route, realBody, options).pipe(
+            map(response => {
+                    if (!AppResponse.success(response as AppResponse)) {
+                        return response;
+                    }
+                    
+                    return response.error as AppResponse;
+                }
+            ),
+            catchError((response: any, caught: Observable<AppResponse>) => {
+                return of(response.error as AppResponse);
+            })
+        );
+    }
+
     private appendTokenIfNeeded(requiresToken: boolean, headers: HttpHeaders): HttpHeaders
     {
         if (requiresToken) {
