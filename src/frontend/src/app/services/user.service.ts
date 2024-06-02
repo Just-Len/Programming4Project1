@@ -54,48 +54,6 @@ export class UserService extends BaseService{
             });
     }
 
-    // async getAllUsers(){
-    //     try {
-    //         // let userPromise = await this.get<User[]>("user").toPromise() as User[];
-    //         // this.lessors = await this.get<Lessor[]>("lessor").toPromise() as Lessor[];
-    //         // this.administrators = await this.get<Administrator[]>("administrator").toPromise() as Administrator[];
-    //         // this.customers = await this.get<Customer[]>("customer").toPromise() as Customer[];
-    //         await Promise.all([this.get<User[]>("user").toPromise(),
-    //         this.get<Lessor[]>("lessor").toPromise(),this.get<Administrator[]>("administrator").toPromise(),this.get<Customer[]>("customer").toPromise()]).then((values) =>{
-    //             this.users = values[0] as User[];
-    //             this.lessors = values[1] as Lessor[];
-    //             this.administrators = values[2] as Administrator[];
-    //             this.customers = values[3] as Customer[];
-    //         })
-    //     } catch (error) {
-    //         console.error("Error fetching data:", error);
-    //     }
-    // }
-    
-    // async load(){
-
-    //     console.log(this.users);
-    //     this.users.forEach(user => {
-    //         if(parseInt(user.role_id)===1){
-    //             user.first_name = this.customers.find(customer => customer.name === user.name)?.first_name || '';
-    //             user.last_name = this.customers.find(customer => customer.name === user.name)?.last_name || '';
-    //             user.phone_number = this.customers.find(customer => customer.name === user.name)?.phone_number || 0;
-    //         }else if(parseInt(user.role_id)===2){
-    //             user.first_name = this.lessors.find(customer => customer.name === user.name)?.first_name || '';
-    //             user.last_name = this.lessors.find(customer => customer.name === user.name)?.last_name || '';
-    //             user.phone_number = this.lessors.find(customer => customer.name === user.name)?.phone_number || 0;
-    //         }else if(parseInt(user.role_id)===3){
-    //             user.first_name = this.administrators.find(customer => customer.name === user.name)?.first_name || '';
-    //             user.last_name = this.administrators.find(customer => customer.name === user.name)?.last_name || '';
-    //             user.phone_number = this.administrators.find(customer => customer.name === user.name)?.phone_number || 0;
-    //         }
-    //     });
-
-    // }
-
-
-    //this.get<Lessor[]>("lessor").subscribe(lessorsAux => {
-
     getUsers(): Observable<User[]> {
         return from(this.initializeArray().then(() => {
             console.log(this.users);
