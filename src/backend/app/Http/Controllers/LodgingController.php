@@ -21,6 +21,15 @@ class LodgingController
         );
     }
 
+    public function indexLessorLodgings($lessor_id)
+    {
+        $data = Lodging::where('lessor_id', $lessor_id)->get();
+        return JsonResponses::ok(
+            "Todos los registros de los alojamientos del arrendador",
+            $data,
+        );
+    }
+
     public function indexBooking($id)
     {
         $bookings = Booking::where('lodging_id', $id)->with('payment')->get();

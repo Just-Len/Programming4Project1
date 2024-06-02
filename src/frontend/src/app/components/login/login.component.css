@@ -1,11 +1,23 @@
+/*
+  :host refers to the component itself, I guess
+*/
+:host {
+  margin: auto;
+}
 
-.login-container, .register-container {
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+.login-container {
   padding: 20px;
   border-radius: 10px;
   margin: 10px;
 }
-p{
+
+p {
   font-size: 14px;
 }
 
@@ -19,6 +31,7 @@ p{
     margin: 0 auto;
     margin-top: 3%;
 }
+
 h2 {
   text-align: center;
 }
@@ -57,9 +70,11 @@ button {
   color: #AFB2B7;
   cursor: pointer;
 }
+
 .buttons{
   margin-top: 13px;
 }
+
 button:hover {
   background-color: #132E35;
 }

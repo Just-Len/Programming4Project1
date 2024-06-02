@@ -5,7 +5,7 @@ import { AppState } from '../models/app_state';
 @Injectable({
   providedIn: 'root'
 })
-export class LoggedGuard {
+export class AlreadyLoggedInGuard {
   constructor(
     private appState: AppState,
     private router: Router)
@@ -15,10 +15,10 @@ export class LoggedGuard {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): MaybeAsync<GuardResult> {
-      if (!this.appState.isUserLogged){
-        this.router.navigate(['/login']);
+      if (this.appState.isUserLogged){
+        this.router.navigate(['/home']);
       }
 
-      return this.appState.isUserLogged;
+      return !this.appState.isUserLogged;
   }
 }

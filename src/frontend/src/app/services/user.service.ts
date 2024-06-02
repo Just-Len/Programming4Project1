@@ -8,7 +8,12 @@ import { BaseService } from "./base.service";
 @Injectable({
     providedIn: 'root'
 })
-export class UserService extends BaseService {
+export class UserService extends BaseService
+{
+    getUser(name: string): Observable<User> {
+        return this.get(`user/${name}`);
+    }
+
     getUsers(): Observable<User[]> {
         return this.get("user");
     }

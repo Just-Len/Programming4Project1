@@ -5,16 +5,20 @@ import { Observable, of } from 'rxjs';
 import { Lodging } from '../../models/lodging';
 import { AsyncPipe, CurrencyPipe, NgFor, NgIf } from '@angular/common';
 import { AppResponse } from '../../models/app_response';
-import { MatDateRangeInput, MatDateRangePicker } from '@angular/material/datepicker';
-import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSidenavModule, MatDrawer } from '@angular/material/sidenav';
+import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import Swal from 'sweetalert2';
 import { AppState } from '../../models/app_state';
+import { UserRole } from '../../models/user';
+import { UserService } from '../../services/user.service';
 
 @Component({
     selector: 'app-lodging',
     standalone: true,
-    imports: [AsyncPipe, CurrencyPipe, NgFor, NgIf, MatDateRangeInput, MatDateRangePicker, MatDrawer, MatDrawerContainer, MatDrawerContent],
-    providers: [LodgingService],
+    imports: [AsyncPipe, CurrencyPipe, NgFor, NgIf, MatDatepickerModule, MatFormFieldModule, MatSidenavModule],
+    providers: [LodgingService, provideMomentDateAdapter()],
     templateUrl: './lodging.component.html',
     styleUrl: './lodging.component.scss'
 })
@@ -23,13 +27,15 @@ export class LodgingComponent implements OnInit {
 
     @ViewChild(MatDrawer)
     sidebar!: MatDrawer;
-    canEdit!: boolean;
+    canEdit: boolean = false;
+    isLessor: boolean = false;
     lodgings!: Observable<Lodging[]>;
     selectedLodging!: Lodging | null;
 
     public constructor(
         private _appState: AppState,
-        private _lodgingService: LodgingService
+        private _lodgingService: LodgingService,
+        private _userService: UserService
     ) {
     }
 
@@ -72,7 +78,13 @@ export class LodgingComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.canEdit = this._appState.role === 1;
+        this.isLessor = this._appState.isUserLogged && this._appState.role == UserRole.Lessor;
+        if (this.isLessor) {
+            this._userService.getUser(this._appState.userName!).subscribe(user => {
+                this.lodgings = this._lodgingService.getLessorLodgings(user.person_id!);
+            });
+        }
+
         this.lodgings = this._lodgingService.getLodgings();
         this.lodgings.subscribe(lodgings => this._lodgings = lodgings);
     }

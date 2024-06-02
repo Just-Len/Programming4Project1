@@ -9,6 +9,10 @@ import { AppResponse } from "../models/app_response";
 })
 export class LodgingService extends BaseService
 {
+    getLessorLodgings(lessorId: number): Observable<Lodging[]> {
+        return this.get(`lessor/${lessorId}/lodging`, true);
+    }
+
     getLodgings(): Observable<Lodging[]> {
         return this.get("lodging");
     }

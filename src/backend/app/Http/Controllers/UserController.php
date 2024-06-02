@@ -253,14 +253,35 @@ class UserController
         return response()->json($response, $response['status']);
     }
 
-    public function show($id)
+    public function show($name)
     {
-        $data = User::find($id);
+        $data = User::find($name);
         if (is_object($data)) {
+            if ($data->role_id == UserRole::ADMINISTRATOR) {
+                $person = Administrator::firstWhere('user_name', $data->name);
+                $person->id = $person->administrator_id;
+            }
+            else if ($data->role_id == UserRole::LESSOR) {
+                $person = Lessor::firstWhere('user_name', $data->name);
+                $person->id = $person->lessor_id;
+            }
+            else {
+                $person = Customer::firstWhere('user_name', $data->name);
+                $person->id = $person->customer_id;
+            }
+
             $response = JsonResponses::ok(
                 'Datos del usuario',
-                $data,
-                'user'
+                [
+                    'name' => $data->name,
+                    'email_address' => $data->email_address,
+                    'role_id' => $data->role_id,
+                    'image' => $data->image,
+                    'person_id' => $person->id,
+                    'first_name' => $person->first_name,
+                    'last_name' => $person->last_name,
+                    'phone_number' => $person->phone_number,
+                ],
             );
         } else {
             $response = JsonResponses::notFound('Recurso no encontrado');

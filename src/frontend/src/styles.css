@@ -17,9 +17,17 @@ body {
     background-color: var(--color-primary);
     background-repeat: no-repeat;
     background-size: cover;
+    display: grid;
+    grid-template-rows: min-content auto;
+    height: 100vh;
     text-align: center;
     margin: 0;
-    padding: 0;
+}
+
+#main {
+    display: grid;
+    grid-template-rows: min-content auto;
+    grid-row: 2;
 }
 
 .bold {
@@ -31,8 +39,6 @@ body {
     background-color: var(--color-secondary);
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-   
-    top: 0;
     z-index: 1000;
 }
 
@@ -89,4 +95,3 @@ body {
 .dropdown:hover .dropdown-content {
     display: block;
 }
-html, body { height: 100%; }

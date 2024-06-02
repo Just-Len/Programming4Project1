@@ -15,7 +15,7 @@ Route::prefix('v1')->group(
     function () {
         Route::apiResource('/booking', BookingController::class, ['except' => ['create', 'edit']]);
         Route::apiResource('/lodging', LodgingController::class, ['except' => ['create', 'edit']]);
-        
+
         Route::get('/administrator', [UserController::class, 'indexAdministrator']);
         Route::get('/customer', [CustomerController::class, 'index']);
         Route::get('/lessor', [LessorController::class, 'index']);
@@ -27,8 +27,10 @@ Route::prefix('v1')->group(
 
         Route::get('/user/identity', [UserController::class, 'getIdentity'])->middleware(ApiAuthMiddleware::class);
         Route::get('/user', [UserController::class, 'index']);
+        Route::get('/user/{name}', [UserController::class, 'show']);
         Route::get('/user_role', [UserController::class, 'indexUserRole']);
-        Route::get('/lodging/{lodging_id}/image', [LodgingController::class,'getImage']);
+        Route::get('/lessor/{lessor_id}/lodging', [LodgingController::class, 'indexLessorLodgings']);
+        Route::get('/lodging/{lodging_id}/image', [LodgingController::class, 'getImage']);
         Route::get('/user/{name}/image', [UserController::class, 'getimage']);
 
         Route::post('/user/{name}/image', [UserController::class, 'uploadImage'])->middleware(ApiAuthMiddleware::class);
@@ -43,10 +45,10 @@ Route::prefix('v1')->group(
         Route::delete('/booking', [BookingController::class, 'destroy'])->middleware(ApiAuthMiddleware::class);
         Route::delete('/lodging/{lodging_id}', [LodgingController::class, 'destroy'])->middleware(LodgingApiAuthMiddleware::class);
         Route::delete('/lodging/{lodging_id}/image', [LodgingController::class, 'deleteImage'])->middleware(LodgingApiAuthMiddleware::class);
-        Route::delete('/user/{name}', [UserController::class,'destroy'])->middleware(ApiAuthMiddleware::class);
-        Route::delete('/user/{name}/image', [UserController::class,'deleteImage'])->middleware(ApiAuthMiddleware::class);
+        Route::delete('/user/{name}', [UserController::class, 'destroy'])->middleware(ApiAuthMiddleware::class);
+        Route::delete('/user/{name}/image', [UserController::class, 'deleteImage'])->middleware(ApiAuthMiddleware::class);
 
-        Route::patch('/user/{name}', [UserController::class,'updatePartial'])->middleware(ApiAuthMiddleware::class);
+        Route::patch('/user/{name}', [UserController::class, 'updatePartial'])->middleware(ApiAuthMiddleware::class);
         Route::put('lodging', [LodgingController::class, 'update'])->middleware(ApiAuthMiddleware::class);
         Route::put('booking', [BookingController::class, 'update'])->middleware(ApiAuthMiddleware::class);
     }
