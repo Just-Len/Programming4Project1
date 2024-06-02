@@ -1,8 +1,10 @@
 <div class="container">
-    
-    <div class="login-container">
-      <h2>Iniciar Sesión</h2>
-      <form #loginForm="ngForm" (ngSubmit)="onsubmit(loginForm)">
+
+  <div class="login-container">
+    <h2>Iniciar Sesión</h2>
+    <form #loginForm="ngForm" (ngSubmit)="onsubmit(loginForm)">
+
+      <i class="fas fa-user"></i>
 
       <div class="input-field">
         <input type="text" placeholder="Usuario" name="username" #name="ngModel" [(ngModel)]="user.name" required >
@@ -18,7 +20,7 @@
         <p>No tienes una cuenta? Registrate!</p>
         <button type="button" [routerLink]="['/register']"> Registrarse</button>  
       </div>
-      
+
     </form>
   </div>
 <router-outlet></router-outlet>
