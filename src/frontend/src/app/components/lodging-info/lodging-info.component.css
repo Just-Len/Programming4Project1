@@ -6,7 +6,7 @@
 #lodging_info_left_section {
     align-items: center;
     display: flex;
-    flex: 1;
+    flex: 2;
     flex-direction: column;
     justify-content: center;
     row-gap: 1em;
@@ -16,11 +16,11 @@
     align-items: center;
     display: flex;
     justify-content: center;
-    flex: 2;
+    flex: 3;
 }
 
 #lodging_image {
-    width: 20em;
+    width: 25em;
 }
 
 .button {

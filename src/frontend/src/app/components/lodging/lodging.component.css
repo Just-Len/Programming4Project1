@@ -1,8 +1,5 @@
-
 mat-drawer-container {
     --lodging_card_border_radius: 1em;
-
-    margin-top: 2em;
 }
 
 mat-drawer {

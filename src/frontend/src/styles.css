@@ -26,10 +26,13 @@ body {
 }
 
 #main {
-    backdrop-filter: blur(15px) brightness(50%);
     display: grid;
     grid-template-rows: min-content auto;
     grid-row: 3;
+}
+
+app-booking, app-error, app-home, app-lodging, app-lodging-info, app-user {
+    backdrop-filter: blur(15px) brightness(50%);
 }
 
 .bold {
