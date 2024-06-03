@@ -13,6 +13,11 @@
     font-size: 20px;
 }
 
+.swal2-popup {
+    background-color: var(--color-secondary);
+    color: white;
+}
+
 body {
     background-image: url("https://img.goodfon.com/original/2000x1325/9/11/otel-maldivy-bassein.jpg");
     background-color: var(--color-primary);
@@ -32,7 +37,8 @@ body {
 }
 
 app-booking, app-error, app-home, app-lodging, app-lodging-info, app-user {
-    backdrop-filter: blur(15px) brightness(50%);
+    backdrop-filter: blur(15px) brightness(40%);
+    color: white;
 }
 
 .bold {
