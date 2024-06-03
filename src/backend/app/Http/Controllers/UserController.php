@@ -55,6 +55,7 @@ class UserController
                 'email_address' => 'required|email|unique:user|max:150'
             ];
             $isValid = validator($data, $rules);
+
             if (!$isValid->fails()) {
                 $user = new User();
                 $user->name = $data['name'];
@@ -93,6 +94,7 @@ class UserController
             } else {
                 $response = [
                     'message' => 'Error al ingresar los datos.',
+                    'errors' => $isValid->errors(),
                     'status' => 400
                 ];
             }

@@ -1,24 +1,53 @@
 <div class="container">
-    <div class="register-container">
-        <h2>Registro</h2>
-        <form>
-          <i class="fas fa-user"></i>
+  <div class="register-container">
+      <h2>Registro</h2>
+      <form #registerForm="ngForm">
+        <div class="form-grid">
           <div class="input-field">
-            <input type="text" placeholder="Usuario" required>
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="Nombre de usuario" name="name" ngModel required>
           </div>
-          <i class="fas fa-envelope"></i>
+
           <div class="input-field">
-            <input type="email" placeholder="Correo electrónico" required>
+            <i class="fas fa-envelope"></i>
+            <input type="email" placeholder="Correo electrónico" name="email" ngModel required>
           </div>
-          <i class="fas fa-lock"></i>
+
           <div class="input-field">
-            <input type="password" placeholder="Contraseña" required>
+            <i class="fas fa-lock"></i>
+            <input type="password" placeholder="Contraseña" name="password" ngModel required>
           </div>
-          <div class="buttons">
-            <button type="submit">Registrarse</button>
-            <p>Ya tienes una cuenta? <br> Inicia Sesion!</p>
-            <button type="button" [routerLink]="['/login']">Iniciar Sesion</button>
+          
+          <div class="input-field">
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="Nombre" name="first_name" ngModel required>
           </div>
-        </form>
-      </div>
+          
+          <div class="input-field">
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="Apellido" name="last_name" ngModel required>
+          </div>
+          
+          <div class="input-field">
+            <i class="fas fa-address-book"></i>
+            <input type="text" placeholder="Número de teléfono" name="phone_number" ngModel required>
+          </div>
+        </div>
+
+        <div class="role-selection">
+          <label>
+            <input type="radio" name="role" value="2" ngModel required> Cliente
+          </label>
+          <label>
+            <input type="radio" name="role" value="3" ngModel required> Arrendador
+          </label>
+        </div>
+
+        <div class="buttons">
+          <button type="submit">Registrarse</button>
+          <p>¿Ya tienes una cuenta? <br> Inicia sesión!</p>
+          <button type="button" [routerLink]="['/login']">Iniciar Sesión</button>
+        </div>
+      </form>
+  </div>
 </div>
