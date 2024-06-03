@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Helpers\JwtAuth;
 use App\Models\User;
+use App\Models\UserRole;
 use App\Utils\JsonResponses;
 
 class ApiAuthMiddleware
@@ -23,14 +24,15 @@ class ApiAuthMiddleware
         return $this->checkUserTokenInfo($request, $next, $user);
     }
 
-    protected function checkUserTokenInfo($request, $next, $user)
+    protected function checkUserTokenInfo($request, $next, $user, $allowAdmin = false)
     {
         $jwt = new JwtAuth();
         $token = $request->bearerToken();
         $tokenInfo = $jwt->checkToken($token, true);
 
         if ($tokenInfo) {
-            if ($user && ($tokenInfo->iss != $user->name || $tokenInfo->last_logout != $user->last_logout)) {
+            if ($user && (strcmp($tokenInfo->iss, $user->name) != 0 || $tokenInfo->last_logout != $user->last_logout)
+                || ($allowAdmin && $tokenInfo->role_id != UserRole::ADMINISTRATOR)) {
                 return JsonResponses::forbidden('No tiene los privilegios necesarios para acceder a este recurso.');
             }
 

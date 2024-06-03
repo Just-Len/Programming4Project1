@@ -33,7 +33,6 @@ class CustomerController
                 $response = JsonResponses::ok(
                     'Datos del cliente',
                     $data,
-                    'customer'
                 );
             } else {
                 $response = JsonResponses::notFound('Recurso no encontrado');
@@ -50,7 +49,6 @@ class CustomerController
             $response = JsonResponses::ok(
                 'Todas las reservas del cliente',
                 $data,
-                'bookings'
             );
         } else {
             $response = JsonResponses::notFound('Recurso no encontrado');

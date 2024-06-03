@@ -21,12 +21,12 @@ class JsonResponses
     //
     // 200 status codes
     //
-    public static function ok($message, $data = null, $dataKey = 'data')
+    public static function ok($message, $data = null)
     {
         $responseData = self::getResponseData(200, $message);
 
         if (isset($data)) {
-            $responseData[$dataKey] = $data;
+            $responseData['data'] = $data;
         }
 
         return self::getJsonResponse($responseData);

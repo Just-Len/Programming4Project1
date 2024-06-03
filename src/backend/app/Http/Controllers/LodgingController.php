@@ -37,7 +37,6 @@ class LodgingController
         return JsonResponses::ok(
             'Todos los registros de las reservas del alojamiento',
             $bookings,
-            'bookings'
         );
     }
 
@@ -93,7 +92,6 @@ class LodgingController
             $response = JsonResponses::ok(
                 'Datos del alojamiento',
                 $data,
-                'lodging'
             );
         } else {
             $response = JsonResponses::notFound(

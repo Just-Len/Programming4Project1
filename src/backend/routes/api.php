@@ -5,6 +5,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\LessorController;
 use App\Http\Controllers\LodgingController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\AdministratorApiAuthMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\ApiAuthMiddleware;
 use App\Http\Middleware\CustomerApiAuthMiddleware;
@@ -13,8 +14,8 @@ use App\Http\Middleware\LodgingApiAuthMiddleware;
 
 Route::prefix('v1')->group(
     function () {
-        Route::apiResource('/booking', BookingController::class, ['except' => ['create', 'edit']]);
-        Route::apiResource('/lodging', LodgingController::class, ['except' => ['create', 'edit']]);
+        Route::apiResource('/booking', BookingController::class, ['except' => ['create', 'edit', 'destroy']]);
+        Route::apiResource('/lodging', LodgingController::class, ['except' => ['create', 'edit', 'destroy']]);
 
         Route::get('/administrator', [UserController::class, 'indexAdministrator']);
         Route::get('/customer', [CustomerController::class, 'index']);
@@ -45,7 +46,7 @@ Route::prefix('v1')->group(
         Route::delete('/booking', [BookingController::class, 'destroy'])->middleware(ApiAuthMiddleware::class);
         Route::delete('/lodging/{lodging_id}', [LodgingController::class, 'destroy'])->middleware(LodgingApiAuthMiddleware::class);
         Route::delete('/lodging/{lodging_id}/image', [LodgingController::class, 'deleteImage'])->middleware(LodgingApiAuthMiddleware::class);
-        Route::delete('/user/{name}', [UserController::class, 'destroy'])->middleware(ApiAuthMiddleware::class);
+        Route::delete('/user/{name}', [UserController::class, 'destroy'])->middleware(AdministratorApiAuthMiddleware::class);
         Route::delete('/user/{name}/image', [UserController::class, 'deleteImage'])->middleware(ApiAuthMiddleware::class);
 
         Route::patch('/user/{name}', [UserController::class, 'updatePartial'])->middleware(ApiAuthMiddleware::class);

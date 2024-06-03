@@ -31,7 +31,6 @@ class LessorController
                 $response = JsonResponses::ok(
                     'Datos del arrendador',
                     $data,
-                    'lessor'
                 );
             } else {
                 $response = JsonResponses::notFound('Recurso no encontrado');

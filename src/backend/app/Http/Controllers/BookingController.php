@@ -75,7 +75,6 @@ class BookingController
             $response = JsonResponses::ok(
                 'Datos de la reserva',
                 $data,
-                'booking'
             );
         } else {
             $response = JsonResponses::notFound('Recurso no encontrado');
