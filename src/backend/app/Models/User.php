@@ -32,5 +32,4 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserRole::class, 'role_id', 'role_id');
     }
-
 }

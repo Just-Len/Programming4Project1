@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { LodgingService } from '../../services/lodging.service';
 import { Dialogs } from '../../util/dialogs';
-import { Observable, of } from 'rxjs';
+import { Observable, firstValueFrom, of } from 'rxjs';
 import { Lodging } from '../../models/lodging';
 import { AsyncPipe, CurrencyPipe, NgFor, NgIf } from '@angular/common';
 import { AppResponse } from '../../models/app_response';
@@ -13,11 +13,15 @@ import Swal from 'sweetalert2';
 import { AppState } from '../../models/app_state';
 import { UserRole } from '../../models/user';
 import { UserService } from '../../services/user.service';
+import { FormControl, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import { BookingService } from '../../services/booking.service';
+import { Booking, BookingStatus } from '../../models/booking';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-lodging',
     standalone: true,
-    imports: [AsyncPipe, CurrencyPipe, NgFor, NgIf, MatDatepickerModule, MatFormFieldModule, MatSidenavModule],
+    imports: [AsyncPipe, CurrencyPipe, FormsModule, NgFor, NgIf, MatDatepickerModule, MatFormFieldModule, MatSidenavModule, ReactiveFormsModule],
     providers: [LodgingService, provideMomentDateAdapter()],
     templateUrl: './lodging.component.html',
     styleUrl: './lodging.component.scss'
@@ -25,23 +29,68 @@ import { UserService } from '../../services/user.service';
 export class LodgingComponent implements OnInit {
     private _lodgings!: Lodging[];
 
+    @ViewChild('bookingForm')
+    bookingForm!: NgForm;
     @ViewChild(MatDrawer)
     sidebar!: MatDrawer;
+    bookingFormGroup!: FormGroup;
     canEdit: boolean = false;
     isLessor: boolean = false;
     lodgings!: Observable<Lodging[]>;
     selectedLodging!: Lodging | null;
+    title: string = "Alojamientos";
 
     public constructor(
         private _appState: AppState,
+        private _bookingService: BookingService,
         private _lodgingService: LodgingService,
-        private _userService: UserService
+        private _userService: UserService,
+        private router: Router
     ) {
     }
 
-    public bookLodging(lodging: Lodging) {
+    public async editLodging(lodgingId: number) {
+        this.router.navigate(["lodging", lodgingId]);
+    }
+
+    public async submitBooking() {
+        if (!this.bookingForm.valid) {
+            return;
+        }
+
+        const startDateMoment = this.bookingFormGroup.get("startDate")?.value as moment.Moment;
+        const endDateMoment = this.bookingFormGroup.get("endDate")?.value as moment.Moment;
+        let startDate = startDateMoment.format("yyyy-MM-DD");
+        let endDate = endDateMoment.format("yyyy-MM-DD");
+        
+        // TODO: Get the customer ID in some way
+        const booking = new Booking(
+            this.selectedLodging!.lodging_id,
+            100,
+            BookingStatus.Created,
+            startDate,
+            endDate);
+        const response = await firstValueFrom(this._bookingService.postBooking(booking));
+        
+        if (AppResponse.success(response)) {
+            this.sidebar.close();
+        }
+        else {
+            Swal.fire({
+                icon: "error",
+                "title": "Ha ocurrido un error",
+                "text": response.message
+            });
+        }
+    }
+
+    public openBookingDrawer(lodging: Lodging) {
         this.selectedLodging = lodging;
         this.sidebar.open();
+    }
+
+    public bookingDrawerClosed() {
+        this.bookingForm.resetForm();
     }
 
     public async deleteLodging(lodgingId: number): Promise<void> {
@@ -78,8 +127,14 @@ export class LodgingComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.bookingFormGroup = new FormGroup({
+            startDate: new FormControl<Date | null>(null, Validators.required),
+            endDate: new FormControl<Date | null>(null, Validators.required)
+        });
+
         this.isLessor = this._appState.isUserLogged && this._appState.role == UserRole.Lessor;
         if (this.isLessor) {
+            this.title = "Mis alojamientos";
             this._userService.getUser(this._appState.userName!).subscribe(user => {
                 this.lodgings = this._lodgingService.getLessorLodgings(user.person_id!);
             });

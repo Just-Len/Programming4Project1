@@ -9,9 +9,11 @@ import { RegisterComponent } from './components/register/register.component';
 import { AdministratorGuard } from './services/administrator.guard';
 import { AlreadyLoggedInGuard } from './services/already_logged_in.guard';
 import { LogInGuard } from './services/login.guard';
+import { LodgingInfoComponent } from './lodging-info/lodging-info.component';
 
 export const routes: Routes = [
     {path: 'lodging', component: LodgingComponent, canActivate: [LogInGuard]},
+    {path: 'lodging/:id', component: LodgingInfoComponent, canActivate: [LogInGuard]},
     {path: 'login', component: LoginComponent, canActivate: [AlreadyLoggedInGuard]},
     {path: 'register', component: RegisterComponent, canActivate: [AlreadyLoggedInGuard]},
     {path: 'home', component: HomeComponent},

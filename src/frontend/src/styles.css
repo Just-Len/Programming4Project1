@@ -14,20 +14,22 @@
 }
 
 body {
+    background-image: url("https://img.goodfon.com/original/2000x1325/9/11/otel-maldivy-bassein.jpg");
     background-color: var(--color-primary);
     background-repeat: no-repeat;
     background-size: cover;
     display: grid;
-    grid-template-rows: min-content auto;
+    grid-template-rows: min-content min-content auto;
     height: 100vh;
     text-align: center;
     margin: 0;
 }
 
 #main {
+    backdrop-filter: blur(15px) brightness(50%);
     display: grid;
     grid-template-rows: min-content auto;
-    grid-row: 2;
+    grid-row: 3;
 }
 
 .bold {

@@ -35,8 +35,8 @@ class BookingController
                 'lodging_id' => 'required|exists:lodging',
                 'customer_id' => 'required|exists:customer',
                 'status_id' => 'required|exists:booking_status,booking_status_id',
-                'start_date' => 'required|date_format:Y-m-d H:i|after_or_equal:today',
-                'end_date' => 'required|date_format:Y-m-d H:i|after:start_date'
+                'start_date' => 'required|date_format:Y-m-d|after_or_equal:today',
+                'end_date' => 'required|date_format:Y-m-d|after:start_date'
             ];
             $isValid = validator($data, $rules);
             if (!$isValid->fails()) {

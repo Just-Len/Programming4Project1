@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../material_theme.scss">
     <link rel="stylesheet" href="../styles.css">
 </head>
-<body background="https://img.goodfon.com/original/2000x1325/9/11/otel-maldivy-bassein.jpg">
+<body>
 @if (isLogged) {
   <div class="navbar">
     <a [routerLink]="['/home']" class="bold">Restify</a>
@@ -23,7 +23,6 @@
     </div>
   </div>
 }
-<router-outlet></router-outlet>
 <app-notification></app-notification>
 <div id="main">
   <router-outlet></router-outlet>

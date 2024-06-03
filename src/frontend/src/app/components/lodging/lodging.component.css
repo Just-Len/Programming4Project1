@@ -1,6 +1,23 @@
+
+mat-drawer-container {
+    --lodging_card_border_radius: 1em;
+
+    margin-top: 2em;
+}
+
 mat-drawer {
     background-color: var(--color-secondary);
     padding: 2em;
+}
+
+mat-form-field {
+    width: 20em;
+}
+
+.button {
+    display: block;
+    margin: auto;
+    padding: 0.5em 3em;
 }
 
 .buttons_container {
@@ -30,14 +47,13 @@ mat-drawer {
 .lodging_card {
     display: flex;
     flex-direction: column;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    border: 0.1em solid #ddd;
+    border-radius: var(--lodging_card_border_radius);
     width: 20em;
 }
 
 .lodging_image {
-    width: 200px;
-    height: 200px;
+    clip-path: rect(0px 0px 100% 100% round var(--lodging_card_border_radius));
     object-fit: cover;
 }
 
@@ -56,7 +72,7 @@ mat-drawer {
 }
 
 .price_per_night {
-    color: #2a9d8f;
+    color: #52f0dd;
 }
 
 .rooms_available {
