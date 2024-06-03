@@ -63,5 +63,5 @@ export class UserComponent implements OnInit{
       this.users = this._userService.getUsers();
     }
 
-    columnsToDisplay =['user_name', 'first_name', 'last_name', 'role', 'image'];
+    columnsToDisplay =['user_name', 'first_name', 'last_name', 'phone_number', 'email_address', 'role', 'image'];
 }

@@ -36,12 +36,12 @@ export class UserService extends BaseService{
                         user.role_id = 'Administrador';
                     }
                 }else if(parseInt(user.role_id) === 2){
-                    let lessorAux = this.lessors.find(lessorAux => lessorAux.user_name === user.name);
-                    if(lessorAux){
-                        user.first_name = lessorAux.first_name;
-                        user.last_name = lessorAux.last_name;
-                        user.phone_number = lessorAux.phone_number;
-                        user.role_id = 'Arrendador';
+                    let customerAux = this.customers.find(customerAux => customerAux.user_name === user.name);
+                    if(customerAux){
+                        user.first_name = customerAux.first_name;
+                        user.last_name = customerAux.last_name;
+                        user.phone_number = customerAux.phone_number;
+                        user.role_id = 'Cliente';
                     }
                 }else if(parseInt(user.role_id) === 3){
                     let customerAux = this.lessors.find(customerAux => customerAux.user_name === user.name);
@@ -49,7 +49,7 @@ export class UserService extends BaseService{
                         user.first_name = customerAux.first_name;
                         user.last_name = customerAux.last_name;
                         user.phone_number = customerAux.phone_number;
-                        user.role_id = 'Cliente';
+                        user.role_id = 'Arrendador';
                     }
                 }
             });

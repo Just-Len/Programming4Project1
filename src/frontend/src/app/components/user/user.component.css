@@ -3,7 +3,7 @@
     width: 70%;
     backdrop-filter: blur(59px);
 }
-.mat-column-role, .mat-column-user_name, .mat-column-first_name, .mat-column-last_name{
+.mat-column-role, .mat-column-user_name, .mat-column-first_name, .mat-column-last_name, .mat-column-phone_number, .mat-column-email_address{
     text-align: center;
 }
 /* td, th {
