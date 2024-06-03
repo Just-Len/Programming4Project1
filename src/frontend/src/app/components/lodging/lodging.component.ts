@@ -16,6 +16,7 @@ import { UserService } from '../../services/user.service';
 import { FormControl, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BookingService } from '../../services/booking.service';
 import { Booking, BookingStatus } from '../../models/booking';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-lodging',
@@ -43,8 +44,13 @@ export class LodgingComponent implements OnInit {
         private _appState: AppState,
         private _bookingService: BookingService,
         private _lodgingService: LodgingService,
-        private _userService: UserService
+        private _userService: UserService,
+        private router: Router
     ) {
+    }
+
+    public async editLodging(lodgingId: number) {
+        this.router.navigate(["lodging", lodgingId]);
     }
 
     public async submitBooking() {

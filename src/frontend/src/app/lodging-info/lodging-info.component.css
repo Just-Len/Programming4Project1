@@ -1,0 +1,27 @@
+#lodging_info_main {
+    display: flex;
+    height: 100%;
+}
+
+#lodging_info_left_section {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 1em;
+}
+
+#lodging_info_right_section {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex: 2;
+}
+
+#lodging_image {
+    width: 20em;
+}
+
+.button {
+}
