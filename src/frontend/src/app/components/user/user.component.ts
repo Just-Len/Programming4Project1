@@ -2,10 +2,13 @@ import { Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user';
 import { AsyncPipe, CurrencyPipe, NgFor } from '@angular/common';
-import { Observable } from 'rxjs';
+import { Observable, filter, map } from 'rxjs';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
+import { Dialogs } from '../../util/dialogs';
+import { AppResponse } from '../../models/app_response';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user',
@@ -16,18 +19,48 @@ import { Router } from '@angular/router';
   providers: [UserService]
 })
 export class UserComponent implements OnInit{
-    @Output() userSelected = new EventEmitter<User>();
     users!: Observable<User[]>;
     public constructor(private _userService: UserService, private router: Router)
     { }
 
-    view(userSelected:User){
-      this.router.navigate([`/user/view/`]);
-      this.userSelected.emit(userSelected);
+    public async delete(userAux:User){
+      console.log(userAux);
+      let deleteUser = await Dialogs.showConfirmDialog(
+        "¿Está seguro de que desea eliminar este usuario?",
+        "Esta acción no se puede revertir."
+      );
+
+      if(!deleteUser){
+        return;
+      }
+
+      this._userService.deleteUser(userAux.name).subscribe(
+        (response: AppResponse) => {
+          if(AppResponse.success(response)) {
+              this.users = this.users.pipe(
+                map(users => users.filter(user => user.name !== userAux.name))
+              );
+              
+              Swal.fire({
+                icon: "info",
+                title: "Usuario eliminado exitosamente",
+              });
+              console.log("Eliminado");
+
+          }else{
+              Swal.fire({
+                icon: "error",
+                "title": "Ha ocurrido un error",
+                "text": response.message
+              })
+          }
+        }
+      )
+
     }
+    
     ngOnInit(): void{
       this.users = this._userService.getUsers();
-      console.log(this.users);
     }
 
     columnsToDisplay =['user_name', 'first_name', 'last_name', 'role', 'image'];

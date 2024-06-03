@@ -6,6 +6,7 @@ import { BaseService } from "./base.service";
 import { Lessor } from "../models/lessor";
 import { Customer } from "../models/customer";
 import { Administrator } from "../models/administrator";
+import { AppResponse } from "../models/app_response";
 
 
 @Injectable({
@@ -82,5 +83,9 @@ export class UserService extends BaseService{
 
         const options = { headers };
         return this._http.get(this.urlAPI + 'user/identity', options);
+    }
+
+    deleteUser(userName: string): Observable<AppResponse>{
+        return this.delete(`user/${userName}`, true, null);
     }
 }

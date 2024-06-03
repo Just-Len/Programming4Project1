@@ -27,35 +27,16 @@
             <td mat-cell *matCellDef="let user"> <img [src]="user.image" alt="" class="image-user"></td>
         </ng-container>
 
+
         <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
         <tr
         mat-row
-        (click)="view(selectedUser)"
+        (click)="delete(selectedUser)"
         *matRowDef="let selectedUser; columns: columnsToDisplay;"
         ></tr>
     </table>
-    
     <mat-paginator [pageSizeOptions]="[5]"
     aria-label="Select page of user">
     </mat-paginator>
-    <!-- <table>
-        <tr>
-            <th>Accion</th>
-            <th>Usuario</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Rol</th>
-            <th>Correo</th>
-            <th>Telefono</th>
-        </tr>
-        <div *ngFor="let user of users | async">
-            <td><input type="checkbox"></td>
-            <td>{{ user.name }}</td>
-            <td >{{ user.first_name }}</td>
-            <td>{{ user.last_name }}</td>
-            <td>{{ user.role_id }}</td>
-            <td>{{ user.email_address }}</td>
-            <td>{{ user.phone_number }}</td>
-        </div>
-    </table> -->
+    <h4>Seleccione un usuario para eliminar</h4>
 </div>
