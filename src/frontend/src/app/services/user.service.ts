@@ -1,12 +1,14 @@
 import { HttpHeaders } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { AfterViewInit, Injectable, ViewChild } from "@angular/core";
 import { User } from "../models/user";
-import { Observable, from, map } from "rxjs";
+import { Observable, from, map, pipe } from "rxjs";
 import { BaseService } from "./base.service";
 import { Lessor } from "../models/lessor";
 import { Customer } from "../models/customer";
 import { Administrator } from "../models/administrator";
 import { AppResponse } from "../models/app_response";
+import { MatTableDataSource } from "@angular/material/table";
+import { MatPaginator } from "@angular/material/paginator";
 
 
 @Injectable({
@@ -17,7 +19,7 @@ export class UserService extends BaseService{
     private lessors!: Lessor[];
     private administrators!: Administrator[];
     private customers!: Customer[];
-
+    
     async initializeArray(){
         await Promise.all([this.get<User[]>("user").toPromise(),
             this.get<Lessor[]>("lessor").toPromise(),this.get<Administrator[]>("administrator").toPromise(),this.get<Customer[]>("customer").toPromise()]).then((values) =>{

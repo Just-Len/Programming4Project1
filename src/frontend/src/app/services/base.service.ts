@@ -42,7 +42,7 @@ export class BaseService {
         const options = { headers, body };
         return this._http.delete<any>(this.urlAPI + route, options).pipe(
             map(response => {
-                    if (!AppResponse.success(response as AppResponse)) {
+                    if (AppResponse.success(response as AppResponse)) {
                         return response;
                     }
                     
