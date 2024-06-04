@@ -19,12 +19,12 @@
     <mat-drawer-content>
         <div id="title_container">
             <h1>{{title}}</h1>
-            <button mat-flat-button type="button" (click)="createLodging()">Crear alojamiento</button>
+            <button mat-flat-button *ngIf="isLessor" type="button" (click)="createLodging()">Crear alojamiento</button>
         </div>
 
         <div class="lodgings_container">
             <div *ngFor="let lodging of lodgings | async" class="lodging_card">
-                <img src="https://img.goodfon.com/original/2000x1325/9/11/otel-maldivy-bassein.jpg" alt="{{lodging.name}}" class="lodging_image">
+                <img *ngIf="lodging.image != null" src="{{prependImagesRoute(lodging.image)}}" alt="{{lodging.name}}" class="lodging_image">
                 <div class="lodging_info">
                     <h2 class="lodging_name">{{ lodging.name }}</h2>
                     <p class="lodging_address">{{ lodging.address }}</p>
@@ -35,9 +35,9 @@
                     </div>
                 </div>
                 <div class="buttons_container">
-                    <button *ngIf="!isLessor" (click)="openBookingDrawer(lodging)">Reserva</button>
+                    <button *ngIf="canBook" (click)="openBookingDrawer(lodging)">{{ isUserLogged ? "Reserva" : "Registrate para reservar" }}</button>
                     <button *ngIf="isLessor" (click)="editLodging(lodging.lodging_id)">Editar</button>
-                    <button *ngIf="isLessor" (click)="deleteLodging(lodging.lodging_id)">Eliminar</button>
+                    <button *ngIf="canDelete" (click)="deleteLodging(lodging.lodging_id)">Eliminar</button>
                 </div>
             </div>
         </div>

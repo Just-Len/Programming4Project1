@@ -148,6 +148,7 @@ export class LodgingInfoComponent implements OnInit
           this._router.navigate(["lodging", response.data!.lodging_id]);
         }
         else {
+          this.lodgingFormGroup = this.buildFormGroup();
           Swal.fire({
             icon: "success",
             title: "El alojamiento ha sido modificado con éxito."
@@ -155,11 +156,9 @@ export class LodgingInfoComponent implements OnInit
         }
       }
       else {
-        Swal.fire({
-          icon: "error",
-          title: "Ha ocurrido un error.",
-          text: response.message
-        });
+        for (const message of AppResponse.getErrors(response)) {
+            this._notificationService.show(message);
+        }
       }
     });
   }
@@ -191,6 +190,16 @@ export class LodgingInfoComponent implements OnInit
     this.lodgingFormGroup.reset();
   }
 
+  private buildFormGroup() {
+    return new FormGroup({
+      name: new FormControl(this.lodging?.name, { nonNullable: true, validators: Validators.required }),
+      description: new FormControl(this.lodging?.description, { nonNullable: true, validators: Validators.required }),
+      address: new FormControl(this.lodging?.address, { nonNullable: true, validators: Validators.required }),
+      availableRooms: new FormControl(this.lodging?.available_rooms, { nonNullable: true, validators: Validators.required }),
+      perNightPrice: new FormControl(this.lodging?.per_night_price, { nonNullable: true, validators: Validators.required })
+    });
+  }
+
   async ngOnInit() {
     this.emptyTitle = "Nuevo alojamiento";
 
@@ -202,12 +211,6 @@ export class LodgingInfoComponent implements OnInit
       this.lodging = await firstValueFrom(this._lodgingService.getLodging(lodgingId));
     }
 
-    this.lodgingFormGroup = new FormGroup({
-      name: new FormControl(this.lodging?.name, { nonNullable: true, validators: Validators.required }),
-      description: new FormControl(this.lodging?.description, { nonNullable: true, validators: Validators.required }),
-      address: new FormControl(this.lodging?.address, { nonNullable: true, validators: Validators.required }),
-      availableRooms: new FormControl(this.lodging?.available_rooms, { nonNullable: true, validators: Validators.required }),
-      perNightPrice: new FormControl(this.lodging?.per_night_price, { nonNullable: true, validators: Validators.required })
-    });
+    this.lodgingFormGroup = this.buildFormGroup();
   }
 }

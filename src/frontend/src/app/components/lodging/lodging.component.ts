@@ -19,6 +19,7 @@ import { Booking, BookingStatus } from '../../models/booking';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
 import { MatButtonModule } from '@angular/material/button';
+import { server } from '../../services/global';
 
 @Component({
     selector: 'app-lodging',
@@ -36,8 +37,10 @@ export class LodgingComponent implements OnInit {
     @ViewChild(MatDrawer)
     sidebar!: MatDrawer;
     bookingFormGroup!: FormGroup;
-    canEdit: boolean = false;
-    isLessor: boolean = false;
+    canBook = false;
+    canDelete = false;
+    isLessor = false;
+    isUserLogged!: boolean;
     lodgings!: Observable<Lodging[]>;
     selectedLodging!: Lodging | null;
     title: string = "Alojamientos";
@@ -50,6 +53,15 @@ export class LodgingComponent implements OnInit {
         private _userService: UserService,
         private router: Router
     ) {
+    }
+
+    prependImagesRoute(lodgingImageFileName: string) {
+        let imageSrc = "";
+        if (lodgingImageFileName != null) {
+            imageSrc = `${server.lodgingImages}${lodgingImageFileName}`;
+        }
+
+        return imageSrc;
     }
 
     public async createLodging() {
@@ -95,8 +107,13 @@ export class LodgingComponent implements OnInit {
     }
 
     public openBookingDrawer(lodging: Lodging) {
-        this.selectedLodging = lodging;
-        this.sidebar.open();
+        if (this.isUserLogged) {
+            this.selectedLodging = lodging;
+            this.sidebar.open();
+        }
+        else {
+            this.router.navigate(["login"]);
+        }
     }
 
     public bookingDrawerClosed() {
@@ -142,7 +159,13 @@ export class LodgingComponent implements OnInit {
             endDate: new FormControl<Date | null>(null, Validators.required)
         });
 
-        this.isLessor = this._appState.isUserLogged && this._appState.role == UserRole.Lessor;
+        this.isUserLogged = this._appState.isUserLogged;
+        if(this.isUserLogged) {
+            this.isLessor = this._appState.role == UserRole.Lessor;
+            this.canDelete = this._appState.role == UserRole.Administrator || this.isLessor;
+        }
+        this.canBook = !this.isUserLogged || this._appState.role == UserRole.Customer;
+
         if (this.isLessor) {
             this.title = "Mis alojamientos";
             this._userService.getUser(this._appState.userName!).subscribe(user => {

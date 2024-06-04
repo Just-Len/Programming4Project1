@@ -26,6 +26,6 @@ class LodgingApiAuthMiddleware extends ApiAuthMiddleware
             }
         }
 
-        return $this->checkUserTokenInfo($request, $next, $user);
+        return $this->checkUserTokenInfo($request, $next, $user, true);
     }
 }

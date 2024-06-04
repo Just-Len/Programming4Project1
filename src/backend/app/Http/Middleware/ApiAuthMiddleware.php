@@ -31,12 +31,19 @@ class ApiAuthMiddleware
         $tokenInfo = $jwt->checkToken($token, true);
 
         if ($tokenInfo) {
-            if ($user && (strcmp($tokenInfo->iss, $user->name) != 0 || $tokenInfo->last_logout != $user->last_logout)
-                || ($allowAdmin && $tokenInfo->role_id != UserRole::ADMINISTRATOR)) {
-                return JsonResponses::forbidden('No tiene los privilegios necesarios para acceder a este recurso.');
+            if (!$user || $user && strcmp($tokenInfo->iss, $user->name) == 0
+                && $tokenInfo->last_logout == $user->last_logout) {
+                return $next($request);
             }
 
-            return $next($request);
+            if ($allowAdmin
+                && $tokenInfo->role_id == UserRole::ADMINISTRATOR
+                && ($adminUser = User::find($tokenInfo->iss))
+                && $adminUser->last_logout == $tokenInfo->last_logout) {
+                return $next($request);
+            }
+
+            return JsonResponses::forbidden('No tiene los privilegios necesarios para acceder a este recurso.');
         } else {
             return JsonResponses::unauthorized('No está autorizado a realizar esta acción.');
         }
