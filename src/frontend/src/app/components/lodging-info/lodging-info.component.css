@@ -27,7 +27,7 @@
 #lodging_form_input_container {
     column-gap: 2em;
     display: grid;
-    grid-template-columns: 15em auto;
+    grid-template-columns: repeat(2, auto);
     grid-template-rows: repeat(4, 1fr);
     padding: 2em;
     row-gap: 1em;
@@ -52,19 +52,26 @@
 
 #lodging_image {
     clip-path: rect(0px 0px 100% 100% round 0.5em);
-    width: 25em;
+    max-height: 15em;
     object-fit: contain;
+    width: 25em;
 }
 
 .buttons_container > button {
     margin: 0px 0.3em;
 }
 
+.lodging_form_input_shrink {
+    justify-self: start;
+}
+
 .lodging_form_first_column {
     align-self: start;
     grid-column: 1;
+    min-width: 16.5em;
 }
 
 .lodging_form_second_column {
     grid-column: 2;
+    min-width: 19em;
 }

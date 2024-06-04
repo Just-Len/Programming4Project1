@@ -380,7 +380,6 @@ class UserController
 
             $response = JsonResponses::created(
                 'Imagen guardada.',
-                'filename',
                 $fileName
             );
         } else {

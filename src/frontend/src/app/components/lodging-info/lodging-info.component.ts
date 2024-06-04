@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { Lodging } from '../../models/lodging';
 import { LodgingService } from '../../services/lodging.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -11,6 +11,8 @@ import { AppResponse } from '../../models/app_response';
 import Swal from 'sweetalert2';
 import { MatButtonModule } from '@angular/material/button';
 import { server } from '../../services/global';
+import { UserService } from '../../services/user.service';
+import { AppState } from '../../models/app_state';
 
 @Component({
   selector: 'app-lodging-info',
@@ -21,15 +23,20 @@ import { server } from '../../services/global';
 })
 export class LodgingInfoComponent implements OnInit
 {
+  create = true;
+  emptyTitle!: string;
   lodgingImageFile!: File | null;
   lodgingImageData: any; 
   lodgingFormGroup!: FormGroup;
-  lodging!: Lodging;
+  lodging!: Lodging | null;
 
   public constructor(
+    private _appState: AppState,
     private _route: ActivatedRoute,
     private _lodgingService: LodgingService,
-    private _notificationService: NotificationService
+    private _notificationService: NotificationService,
+    private _router: Router,
+    private _userService: UserService
   )
   { }
 
@@ -38,17 +45,26 @@ export class LodgingInfoComponent implements OnInit
   }
 
   get lodgingName() {
-    const lodgingName = this.lodgingFormGroup.get("name")?.value as string;
+    let lodgingName;
     
-    if (lodgingName.length == 0) {
-      return "Alojamiento";
+    if (this.lodgingFormGroup?.get("name") !== null) {
+      lodgingName = this.lodgingFormGroup.get("name")!.value;
+    } 
+    
+    if (lodgingName == null) {
+      lodgingName = this.emptyTitle;
     }
 
     return lodgingName;
   }
 
-  prependImagesRoute(lodgingImageFileName: string) {
-    return `${server.lodgingImages}${lodgingImageFileName}`;
+  prependImagesRoute(lodging: Lodging | null) {
+    let imageSrc = "";
+    if (lodging != null) {
+      imageSrc = `${server.lodgingImages}${lodging?.image}`;
+    }
+
+    return imageSrc;
   }
 
   onLodgingImageChanged(event: any) {
@@ -65,7 +81,7 @@ export class LodgingInfoComponent implements OnInit
     this.lodgingImageData = null;
   }
 
-  submitLodging() {
+  async submitLodging() {
     const lodgingName = this.lodgingFormGroup.get<string>("name")!;
     const address = this.lodgingFormGroup.get<string>("address")!;
     const description = this.lodgingFormGroup.get<string>("description")!;
@@ -92,23 +108,56 @@ export class LodgingInfoComponent implements OnInit
       return;
     }
 
-    this.lodging.address = address.value.trim();
-    this.lodging.description = description.value.trim();
-    this.lodging.name = lodgingName.value.trim();
-    this.lodging.per_night_price = parseFloat(perNightPrice.value);
-    this.lodging.available_rooms = parseInt(availableRooms.value);
+    const newLodging = new Lodging(
+      0,
+      0,
+      lodgingName.value.trim(),
+      description.value.trim(),
+      "",
+      address.value.trim(),
+      null,
+      parseFloat(perNightPrice.value),
+      parseInt(availableRooms.value)
+    );
 
-    this._lodgingService.updateLodging(this.lodging).subscribe(response => {
+    if (this.lodging) {
+      newLodging.lodging_id = this.lodging.lodging_id;
+      newLodging.lessor_id = this.lodging.lessor_id;
+      newLodging.image = this.lodging.image;
+      newLodging.lessor = this.lodging.lessor;
+    }
+
+    let observable;
+    if (this.create) {
+      const response = await firstValueFrom(this._userService.getUser(this._appState.userName!));
+      newLodging.lessor_id = response.person_id;
+      observable = this._lodgingService.saveLodging(newLodging);
+    }
+    else {
+      observable = this._lodgingService.updateLodging(newLodging);
+    }
+
+    observable.subscribe(async response => {
       if (AppResponse.success(response)) {
-        Swal.fire({
-          icon: "success",
-          title: "El alojamiento ha sido modificado con éxito"
-        });
+        if (this.create) {
+          await Swal.fire({
+            icon: "success",
+            title: "El alojamiento ha sido creado con éxito."
+          });
+
+          this._router.navigate(["lodging", response.data!.lodging_id]);
+        }
+        else {
+          Swal.fire({
+            icon: "success",
+            title: "El alojamiento ha sido modificado con éxito."
+          });
+        }
       }
       else {
         Swal.fire({
           icon: "error",
-          title: "Ha ocurrido un error",
+          title: "Ha ocurrido un error.",
           text: response.message
         });
       }
@@ -116,12 +165,12 @@ export class LodgingInfoComponent implements OnInit
   }
 
   submitLodgingImage() {
-    if (this.lodgingImageFile != null) {
+    if (this.lodging != null && this.lodgingImageFile != null) {
       this._lodgingService.saveLodgingImage(this.lodging.lodging_id, this.lodgingImageFile).subscribe(
         response => {
           if (AppResponse.success(response)) {
             this.undoImageChange();
-            this.lodging.image = response.filename;
+            this.lodging!.image = response.data;
             Swal.fire({
               icon: "success",
               title: "El cambio de imagen se ha realizado con éxito."
@@ -143,15 +192,22 @@ export class LodgingInfoComponent implements OnInit
   }
 
   async ngOnInit() {
-    const lodgingId = parseInt(this._route.snapshot.paramMap.get("id") as string);
-    this.lodging = await firstValueFrom(this._lodgingService.getLodging(lodgingId));
+    this.emptyTitle = "Nuevo alojamiento";
+
+    const lodgingIdString = this._route.snapshot.paramMap.get("id");
+    if (lodgingIdString !== null) {
+      this.create = false;
+      this.emptyTitle = "Alojamiento";
+      const lodgingId = parseInt(lodgingIdString);
+      this.lodging = await firstValueFrom(this._lodgingService.getLodging(lodgingId));
+    }
 
     this.lodgingFormGroup = new FormGroup({
-      name: new FormControl(this.lodging.name, { nonNullable: true, validators: Validators.required }),
-      description: new FormControl(this.lodging.description, { nonNullable: true, validators: Validators.required }),
-      address: new FormControl(this.lodging.address, { nonNullable: true, validators: Validators.required }),
-      availableRooms: new FormControl(this.lodging.available_rooms, { nonNullable: true, validators: Validators.required }),
-      perNightPrice: new FormControl(this.lodging.per_night_price, { nonNullable: true, validators: Validators.required })
+      name: new FormControl(this.lodging?.name, { nonNullable: true, validators: Validators.required }),
+      description: new FormControl(this.lodging?.description, { nonNullable: true, validators: Validators.required }),
+      address: new FormControl(this.lodging?.address, { nonNullable: true, validators: Validators.required }),
+      availableRooms: new FormControl(this.lodging?.available_rooms, { nonNullable: true, validators: Validators.required }),
+      perNightPrice: new FormControl(this.lodging?.per_night_price, { nonNullable: true, validators: Validators.required })
     });
   }
 }

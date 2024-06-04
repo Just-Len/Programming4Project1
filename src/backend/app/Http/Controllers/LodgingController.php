@@ -51,7 +51,7 @@ class LodgingController
                 'name' => 'required|string|max:150',
                 'description' => 'required|string|max:1000',
                 'address' => 'required|string|max:300',
-                'per_night_price' => 'required|decimal:2,6',
+                'per_night_price' => 'required|decimal:0,6',
                 'available_rooms' => 'required|integer'
             ];
             $validation = validator($data, $rules);
@@ -67,7 +67,6 @@ class LodgingController
 
                 $response = JsonResponses::created(
                     'Alojamiento creado',
-                    'lodging',
                     $lodging
                 );
             } else {
@@ -205,7 +204,6 @@ class LodgingController
 
             $response = JsonResponses::created(
                 'Imagen guardada.',
-                'filename',
                 $fileName
             );
         } else {

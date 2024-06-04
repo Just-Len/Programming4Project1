@@ -4,7 +4,7 @@ export class AppResponse
         public cat: string,
         public status: number,
         public message: string,
-        public data: any[] | null,
+        public data: any | null,
         public errors: any[] | null
     )
     { }

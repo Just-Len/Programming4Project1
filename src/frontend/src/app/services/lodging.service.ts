@@ -27,6 +27,20 @@ export class LodgingService extends BaseService
         return this.delete(`lodging/${lodgingId}`, true, null);
     }
 
+    saveLodging(lodging: Lodging): Observable<AppResponse> {
+        const lodgingTrimmed = {
+            lodging_id: lodging.lodging_id,
+            lessor_id: lodging.lessor_id,
+            address: lodging.address,
+            name: lodging.name,
+            description: lodging.description,
+            available_rooms: lodging.available_rooms,
+            per_night_price: lodging.per_night_price
+        };
+
+        return this.post("lodging", true, lodgingTrimmed);
+    }
+
     updateLodging(lodging: Lodging): Observable<AppResponse> {
         const lodgingTrimmed = {
             lodging_id: lodging.lodging_id,

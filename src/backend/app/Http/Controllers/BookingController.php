@@ -49,7 +49,6 @@ class BookingController
                 $booking->save();
                 $response = JsonResponses::created(
                     'Reserva creada',
-                    'booking',
                     $booking
                 );
             } else {

@@ -4,7 +4,6 @@ import { server } from "./global";
 import { Observable, catchError, map, of } from "rxjs";
 import { AppResponse } from "../models/app_response";
 import { AppState } from "../models/app_state";
-import { FileAppResponse } from "../models/file_app_response";
 
 
 @Injectable({
@@ -61,7 +60,7 @@ export class BaseService {
         );
     }
 
-    postFile(route: string, requiresToken: boolean, file: File): Observable<FileAppResponse> {
+    postFile(route: string, requiresToken: boolean, file: File): Observable<AppResponse> {
         let headers = new HttpHeaders();
         headers = this.appendTokenIfNeeded(requiresToken, headers);
 

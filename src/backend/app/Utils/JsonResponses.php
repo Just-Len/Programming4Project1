@@ -32,10 +32,10 @@ class JsonResponses
         return self::getJsonResponse($responseData);
     }
 
-    public static function created($message, $dataKey, $data)
+    public static function created($message, $data)
     {
         $responseData = self::getResponseData(201, $message);
-        $responseData[$dataKey] = $data;
+        $responseData['data'] = $data;
 
         return self::getJsonResponse($responseData);
     }

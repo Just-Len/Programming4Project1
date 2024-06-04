@@ -18,11 +18,12 @@ import { BookingService } from '../../services/booking.service';
 import { Booking, BookingStatus } from '../../models/booking';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-lodging',
     standalone: true,
-    imports: [AsyncPipe, CurrencyPipe, FormsModule, NgFor, NgIf, MatDatepickerModule, MatFormFieldModule, MatSidenavModule, ReactiveFormsModule],
+    imports: [AsyncPipe, CurrencyPipe, FormsModule, NgFor, NgIf, MatButtonModule, MatDatepickerModule, MatFormFieldModule, MatSidenavModule, ReactiveFormsModule],
     providers: [provideMomentDateAdapter()],
     templateUrl: './lodging.component.html',
     styleUrl: './lodging.component.scss'
@@ -49,6 +50,10 @@ export class LodgingComponent implements OnInit {
         private _userService: UserService,
         private router: Router
     ) {
+    }
+
+    public async createLodging() {
+        this.router.navigate(["lodging/create"]);
     }
 
     public async editLodging(lodgingId: number) {

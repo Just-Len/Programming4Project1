@@ -17,7 +17,10 @@
         </form>
     </mat-drawer>
     <mat-drawer-content>
-        <h1>{{title}}</h1>
+        <div id="title_container">
+            <h1>{{title}}</h1>
+            <button mat-flat-button type="button" (click)="createLodging()">Crear alojamiento</button>
+        </div>
 
         <div class="lodgings_container">
             <div *ngFor="let lodging of lodgings | async" class="lodging_card">

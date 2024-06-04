@@ -77,3 +77,21 @@ mat-form-field {
     display: block;
     margin-top: 5px;
 }
+
+#title_container {
+    align-items: center;
+    display: grid;
+    grid-template-columns: auto min-content;
+}
+
+#title_container > h1 {
+    grid-column: 1 / span 2;
+    grid-row: 1;
+}
+
+#title_container > button {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0px 2em;
+    z-index: 1;
+}
