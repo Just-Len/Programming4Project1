@@ -68,6 +68,18 @@ export class UserService extends BaseService{
         return this.get(`user/${name}`);
     }
     
+    register(user: User): Observable<any> {
+        let userJson = JSON.stringify(user);
+        let params = 'data=' + userJson;
+        let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+        return this._http.post(this.urlAPI + 'user', params, { headers });
+      }
+    
+      uploadProfilePhoto(file: File, userName: string): Observable<any> {
+        const formData = new FormData();
+        formData.append('file', file);
+        return this._http.post(`${this.urlAPI}user/${userName}/image`, formData);
+      }
 
     login(user: User): Observable<any> {
         let userJson = JSON.stringify(user);

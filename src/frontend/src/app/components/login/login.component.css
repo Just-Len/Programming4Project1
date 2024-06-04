@@ -1,6 +1,4 @@
-/*
-  :host refers to the component itself, I guess
-*/
+
 :host {
   margin: auto;
 }
@@ -28,8 +26,8 @@ p {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: 300px;
     backdrop-filter: blur(59px);
-    margin: 0 auto;
-    margin-top: 3%;
+    
+    margin-top: 2%;
 }
 
 h2 {
