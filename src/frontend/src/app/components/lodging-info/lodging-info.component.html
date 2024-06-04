@@ -2,9 +2,15 @@
     <h1>{{ lodgingName }}</h1>
     <div id="lodging_info_main">
         <div id="lodging_info_left_section">
-            <img id="lodging_image" src="{{ lodgingImageData ?? lodging.image }}">
-            <input type="file" name="file" id="file" (change)="onLodgingImageChanged($event)" />
-            <button class="button">Cambiar imagen</button>
+            <div id="lodging_image_container">
+                <img id="lodging_image" src="{{ lodgingImageData ?? prependImagesRoute(lodging.image) }}">
+            </div>
+            <input #lodgingImageInput hidden="true" type="file" name="file" id="lodgingImageInput" title="Seleccionar imagen" (change)="onLodgingImageChanged($event)" />
+            <div class="buttons_container">
+                <button mat-flat-button class="button" (click)="lodgingImageInput.click()">{{ newLodgingImageSubmitted ? "Elegir nueva imagen" : "Cambiar imagen" }}</button>
+                <button *ngIf="newLodgingImageSubmitted" mat-flat-button class="button" (click)="submitLodgingImage()">Confirmar</button>
+                <button *ngIf="newLodgingImageSubmitted" mat-flat-button class="button" (click)="undoImageChange()">Deshacer</button>
+            </div>
         </div>
         <div id="lodging_info_right_section">
             <form id="lodging_form" #lodgingForm="ngForm" [formGroup]="lodgingFormGroup" (ngSubmit)="submitLodging()">
@@ -31,9 +37,9 @@
                     </mat-form-field>
                 </div>
 
-                <div id="buttons_container">
-                    <button type="submit">Guardar cambios</button>
-                    <button type="button" (click)="resetForm()">Borrar cambios</button>
+                <div class="buttons_container">
+                    <button mat-flat-button type="submit">Guardar cambios</button>
+                    <button mat-flat-button type="button" (click)="resetForm()">Borrar cambios</button>
                 </div>
             </form>
         </div>

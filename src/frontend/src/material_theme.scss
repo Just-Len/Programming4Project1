@@ -14,6 +14,7 @@ $my-theme: mat.define-dark-theme((
 ));
 
 @include mat.core-theme($my-theme);
+@include mat.button-theme($my-theme);
 @include mat.datepicker-theme($my-theme);
 @include mat.form-field-theme($my-theme);
 @include mat.input-theme($my-theme);

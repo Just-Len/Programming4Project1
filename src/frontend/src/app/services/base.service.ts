@@ -4,6 +4,7 @@ import { server } from "./global";
 import { Observable, catchError, map, of } from "rxjs";
 import { AppResponse } from "../models/app_response";
 import { AppState } from "../models/app_state";
+import { FileAppResponse } from "../models/file_app_response";
 
 
 @Injectable({
@@ -41,17 +42,8 @@ export class BaseService {
 
         const options = { headers, body };
         return this._http.delete<any>(this.urlAPI + route, options).pipe(
-            map(response => {
-                    if (AppResponse.success(response as AppResponse)) {
-                        return response;
-                    }
-                    
-                    return response.error as AppResponse;
-                }
-            ),
-            catchError((response: any, caught: Observable<AppResponse>) => {
-                return of(response.error as AppResponse);
-            })
+            map(this.handleAppResponse),
+            catchError(this.handleError)
         );
     }
     
@@ -59,42 +51,55 @@ export class BaseService {
         let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
         headers = this.appendTokenIfNeeded(requiresToken, headers);
 
-        const realBody = `data=${JSON.stringify(body)}`; // just why do I have to do this?
+        const realBody = new URLSearchParams()
+        realBody.set("data", JSON.stringify(body));
+
         const options = { headers };
         return this._http.post<any>(this.urlAPI + route, realBody, options).pipe(
-            map(response => {
-                    if (AppResponse.success(response as AppResponse)) {
-                        return response;
-                    }
-                    
-                    return response.error as AppResponse;
-                }
-            ),
-            catchError((response: any, caught: Observable<AppResponse>) => {
-                return of(response.error as AppResponse);
-            })
+            map(this.handleAppResponse),
+            catchError(this.handleError)
+        );
+    }
+
+    postFile(route: string, requiresToken: boolean, file: File): Observable<FileAppResponse> {
+        let headers = new HttpHeaders();
+        headers = this.appendTokenIfNeeded(requiresToken, headers);
+
+        const formData: FormData = new FormData();
+        formData.append("file", file, file.name);
+
+        const options = { headers };
+        return this._http.post<any>(this.urlAPI + route, formData, options).pipe(
+            map(this.handleAppResponse),
+            catchError(this.handleError)
         );
     }
 
     put(route: string, requiresToken: boolean, body: any): Observable<AppResponse> {
-        let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+        let headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded'});
         headers = this.appendTokenIfNeeded(requiresToken, headers);
 
-        const realBody = `data=${JSON.stringify(body)}`; // just why do I have to do this?
+        const realBody = new URLSearchParams()
+        realBody.set("data", JSON.stringify(body));
+
         const options = { headers };
         return this._http.put<any>(this.urlAPI + route, realBody, options).pipe(
-            map(response => {
-                    if (!AppResponse.success(response as AppResponse)) {
-                        return response;
-                    }
-                    
-                    return response.error as AppResponse;
-                }
-            ),
-            catchError((response: any, caught: Observable<AppResponse>) => {
-                return of(response.error as AppResponse);
-            })
+            map(this.handleAppResponse),
+            catchError(this.handleError)
         );
+    }
+
+    private handleAppResponse<T>(response: any) {
+        if (AppResponse.success(response as AppResponse)) {
+            return response;
+        }
+        
+        return response.error as T;
+    }
+
+    private handleError<T>(response: any, caught: Observable<T>) {
+        // TODO: What if it's a 500 error?
+        return of(response.error as T);
     }
 
     private appendTokenIfNeeded(requiresToken: boolean, headers: HttpHeaders): HttpHeaders

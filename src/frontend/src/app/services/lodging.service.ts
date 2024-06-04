@@ -28,6 +28,19 @@ export class LodgingService extends BaseService
     }
 
     updateLodging(lodging: Lodging): Observable<AppResponse> {
-        return this.put("lodging", true, lodging);
+        const lodgingTrimmed = {
+            lodging_id: lodging.lodging_id,
+            address: lodging.address,
+            name: lodging.name,
+            description: lodging.description,
+            available_rooms: lodging.available_rooms,
+            per_night_price: lodging.per_night_price
+        };
+
+        return this.put("lodging", true, lodgingTrimmed);
+    }
+
+    saveLodgingImage(lodgingId: number, imageFile: File) {
+        return this.postFile(`lodging/${lodgingId}/image`, true, imageFile);
     }
 }

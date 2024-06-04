@@ -13,6 +13,7 @@ import { LodgingInfoComponent } from './components/lodging-info/lodging-info.com
 
 export const routes: Routes = [
     {path: 'lodging', component: LodgingComponent, canActivate: [LogInGuard]},
+    {path: 'lodging/create', component: LodgingInfoComponent, canActivate: [LogInGuard]},
     {path: 'lodging/:id', component: LodgingInfoComponent, canActivate: [LogInGuard]},
     {path: 'login', component: LoginComponent, canActivate: [AlreadyLoggedInGuard]},
     {path: 'register', component: RegisterComponent, canActivate: [AlreadyLoggedInGuard]},

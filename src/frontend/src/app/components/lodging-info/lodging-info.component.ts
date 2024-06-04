@@ -3,22 +3,25 @@ import { MatInputModule } from '@angular/material/input';
 import { Lodging } from '../../models/lodging';
 import { LodgingService } from '../../services/lodging.service';
 import { ActivatedRoute } from '@angular/router';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NotificationService } from '../../services/notification.service';
 import { AppResponse } from '../../models/app_response';
 import Swal from 'sweetalert2';
+import { MatButtonModule } from '@angular/material/button';
+import { server } from '../../services/global';
 
 @Component({
   selector: 'app-lodging-info',
   standalone: true,
-  imports: [AsyncPipe, FormsModule, MatInputModule, ReactiveFormsModule],
+  imports: [AsyncPipe, FormsModule, MatButtonModule, MatInputModule, NgIf, ReactiveFormsModule],
   templateUrl: './lodging-info.component.html',
   styleUrl: './lodging-info.component.css'
 })
 export class LodgingInfoComponent implements OnInit
 {
+  lodgingImageFile!: File | null;
   lodgingImageData: any; 
   lodgingFormGroup!: FormGroup;
   lodging!: Lodging;
@@ -30,6 +33,10 @@ export class LodgingInfoComponent implements OnInit
   )
   { }
 
+  get newLodgingImageSubmitted() {
+    return this.lodgingImageData != null;
+  }
+
   get lodgingName() {
     const lodgingName = this.lodgingFormGroup.get("name")?.value as string;
     
@@ -40,13 +47,22 @@ export class LodgingInfoComponent implements OnInit
     return lodgingName;
   }
 
+  prependImagesRoute(lodgingImageFileName: string) {
+    return `${server.lodgingImages}${lodgingImageFileName}`;
+  }
+
   onLodgingImageChanged(event: any) {
-    const imageFile = event.target.files[0];
+    this.lodgingImageFile = event.target.files[0];
 
     const reader = new FileReader();
     reader.onload = e => this.lodgingImageData = reader.result;
 
-    reader.readAsDataURL(imageFile);
+    reader.readAsDataURL(this.lodgingImageFile!);
+  }
+
+  undoImageChange() {
+    this.lodgingImageFile = null;
+    this.lodgingImageData = null;
   }
 
   submitLodging() {
@@ -97,6 +113,29 @@ export class LodgingInfoComponent implements OnInit
         });
       }
     });
+  }
+
+  submitLodgingImage() {
+    if (this.lodgingImageFile != null) {
+      this._lodgingService.saveLodgingImage(this.lodging.lodging_id, this.lodgingImageFile).subscribe(
+        response => {
+          if (AppResponse.success(response)) {
+            this.undoImageChange();
+            this.lodging.image = response.filename;
+            Swal.fire({
+              icon: "success",
+              title: "El cambio de imagen se ha realizado con éxito."
+            });
+          }
+          else {
+            Swal.fire({
+              icon: "error",
+              title: "Ha ocurrido un error"
+            });
+          }
+        }
+      )
+    }
   }
 
   resetForm() {
