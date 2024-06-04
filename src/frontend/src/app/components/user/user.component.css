@@ -2,12 +2,11 @@
     margin: 0 auto;
     width: 70%;
 }
-.mat-column-role, .mat-column-user_name, .mat-column-first_name, .mat-column-last_name, .mat-column-phone_number, .mat-column-email_address{
+.mat-column-role, .mat-column-user_name, .mat-column-first_name, .mat-column-last_name, 
+.mat-column-phone_number, .mat-column-email_address, .mat-column-image{
     text-align: center;
+    color: white;
 }
-/* td, th {
-    border: 1px solid;
-} */
 table{
     background-color:#69818D;
 }
