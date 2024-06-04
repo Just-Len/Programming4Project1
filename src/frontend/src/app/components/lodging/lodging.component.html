@@ -20,10 +20,13 @@
         <div id="title_container">
             <h1>{{title}}</h1>
             <button mat-flat-button *ngIf="isLessor" type="button" (click)="createLodging()">Crear alojamiento</button>
+            <mat-form-field>
+                <input matInput placeholder="Buscar..." (input)="searchTermChanged($event)">
+            </mat-form-field>
         </div>
 
         <div class="lodgings_container">
-            <div *ngFor="let lodging of lodgings | async" class="lodging_card">
+            <div *ngFor="let lodging of pagedLodgings" class="lodging_card">
                 <img *ngIf="lodging.image != null" src="{{prependImagesRoute(lodging.image)}}" alt="{{lodging.name}}" class="lodging_image">
                 <div class="lodging_info">
                     <h2 class="lodging_name">{{ lodging.name }}</h2>
@@ -41,5 +44,10 @@
                 </div>
             </div>
         </div>
+        <mat-paginator #paginator mat-flat-paginator
+            [length]="pagedLodgings.length" [pageSize]="pageSize"
+            [pageIndex]="currentPage" [pageSizeOptions]="[5, 10]"
+            (page)="pageChanged($event)">
+        </mat-paginator>
     </mat-drawer-content>
 </mat-drawer-container>

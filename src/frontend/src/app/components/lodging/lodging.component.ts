@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { LodgingService } from '../../services/lodging.service';
 import { Dialogs } from '../../util/dialogs';
-import { Observable, firstValueFrom, of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { Lodging } from '../../models/lodging';
 import { AsyncPipe, CurrencyPipe, NgFor, NgIf } from '@angular/common';
 import { AppResponse } from '../../models/app_response';
@@ -20,11 +20,14 @@ import { Router } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
 import { MatButtonModule } from '@angular/material/button';
 import { server } from '../../services/global';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
     selector: 'app-lodging',
     standalone: true,
-    imports: [AsyncPipe, CurrencyPipe, FormsModule, NgFor, NgIf, MatButtonModule, MatDatepickerModule, MatFormFieldModule, MatSidenavModule, ReactiveFormsModule],
+    imports: [AsyncPipe, CurrencyPipe, FormsModule, NgFor, NgIf, MatButtonModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatPaginatorModule, MatSidenavModule, ReactiveFormsModule],
     providers: [provideMomentDateAdapter()],
     templateUrl: './lodging.component.html',
     styleUrl: './lodging.component.scss'
@@ -34,16 +37,25 @@ export class LodgingComponent implements OnInit {
 
     @ViewChild('bookingForm')
     bookingForm!: NgForm;
+    @ViewChild('paginator')
+    paginator!: MatPaginator;
     @ViewChild(MatDrawer)
     sidebar!: MatDrawer;
+
     bookingFormGroup!: FormGroup;
     canBook = false;
     canDelete = false;
     isLessor = false;
     isUserLogged!: boolean;
-    lodgings!: Observable<Lodging[]>;
+    _filteredLodgings: Lodging[] | null = null;
+    pagedLodgings!: Lodging[];
+    currentPage = 0;
+    pageSize = 10;
+    lodgingsDataSource!: MatTableDataSource<Lodging>;
     selectedLodging!: Lodging | null;
     title: string = "Alojamientos";
+    searchTerm = "";
+    searchTermCurrentTimeout!: any;
 
     public constructor(
         private _appState: AppState,
@@ -120,6 +132,38 @@ export class LodgingComponent implements OnInit {
         this.bookingForm.resetForm();
     }
 
+    public pageChanged(event: any) {
+        this.pageSize = event.pageSize;
+        this.updatePagedList(event.pageIndex);
+    }
+
+    public searchTermChanged(event: any) {
+        this.searchTerm = event.target.value;
+        if (this.searchTermCurrentTimeout != null) {
+            clearTimeout(this.searchTermCurrentTimeout);
+        }
+
+        this.searchTermCurrentTimeout = setTimeout(this.filterLodgings, 500, this);
+    }
+
+    public filterLodgings(component: LodgingComponent) {
+        this.searchTermCurrentTimeout = null;
+        if (component.searchTerm != "") {
+            const searchTermUppercase = component.searchTerm.toLocaleUpperCase();
+            component._filteredLodgings = component._lodgings.filter(lodging => {
+                // yeah, this again
+                return lodging.name.toLocaleUpperCase().includes(searchTermUppercase)
+                        || lodging.description.toLocaleUpperCase().includes(searchTermUppercase)
+                        || lodging.address.toLocaleUpperCase().includes(searchTermUppercase);
+            });
+        }
+        else {
+            component._filteredLodgings = null;
+        }
+
+        component.updatePagedList(0);
+    }
+
     public async deleteLodging(lodgingId: number): Promise<void> {
         const deleteLodging = await Dialogs.showConfirmDialog(
             "¿Está seguro de que desea eliminar este alojamiento?",
@@ -135,7 +179,7 @@ export class LodgingComponent implements OnInit {
                 if (AppResponse.success(response)) {
                     // lodgings, lodgings, lodgings, lodgings, lodgings
                     this._lodgings = this._lodgings.filter(lodging => lodging.lodging_id !== lodgingId);
-                    this.lodgings = of(this._lodgings);
+                    this.updatePagedList(this.currentPage);
 
                     Swal.fire({
                         icon: "info",
@@ -151,6 +195,21 @@ export class LodgingComponent implements OnInit {
                     });
                 }
             });
+    }
+
+    private updatePagedList(pageIndex: number) {
+        let startIndex = pageIndex * this.pageSize;
+        let endIndex = startIndex + this.pageSize;
+        if(endIndex > this._lodgings.length){
+          endIndex = this._lodgings.length;
+        }
+
+        let lodgings = this._lodgings;
+        if (this._filteredLodgings != null) {
+            lodgings = this._filteredLodgings;
+        }
+
+        this.pagedLodgings = lodgings.slice(startIndex, endIndex);
     }
 
     ngOnInit(): void {
@@ -169,11 +228,17 @@ export class LodgingComponent implements OnInit {
         if (this.isLessor) {
             this.title = "Mis alojamientos";
             this._userService.getUser(this._appState.userName!).subscribe(user => {
-                this.lodgings = this._lodgingService.getLessorLodgings(user.person_id!);
+                this._lodgingService.getLessorLodgings(user.person_id!).subscribe(lodgings => {
+                    this._lodgings = lodgings;
+                    this.updatePagedList(0);
+                });
             });
         }
-
-        this.lodgings = this._lodgingService.getLodgings();
-        this.lodgings.subscribe(lodgings => this._lodgings = lodgings);
+        else {
+            this._lodgingService.getLodgings().subscribe(lodgings => {
+                this._lodgings = lodgings;
+                this.updatePagedList(0);
+            });
+        }
     }
 }

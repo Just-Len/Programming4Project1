@@ -25,3 +25,16 @@ $my-theme: mat.define-dark-theme((
 html {
   --mat-sidenav-content-background-color: none;
 }
+
+mat-paginator {
+  background-color: transparent !important;
+}
+
+.mat-mdc-paginator-container {
+  margin: auto;
+  width: auto !important;
+}
+
+.mdc-text-field--outlined {
+  --mdc-outlined-text-field-container-shape: 28px !important;
+}

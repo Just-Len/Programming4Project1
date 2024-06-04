@@ -51,7 +51,7 @@ export class LodgingInfoComponent implements OnInit
       lodgingName = this.lodgingFormGroup.get("name")!.value;
     } 
     
-    if (lodgingName == null) {
+    if (lodgingName == "") {
       lodgingName = this.emptyTitle;
     }
 
@@ -148,6 +148,7 @@ export class LodgingInfoComponent implements OnInit
           this._router.navigate(["lodging", response.data!.lodging_id]);
         }
         else {
+          this.lodging = newLodging;
           this.lodgingFormGroup = this.buildFormGroup();
           Swal.fire({
             icon: "success",
