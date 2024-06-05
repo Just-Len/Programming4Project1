@@ -1,4 +1,11 @@
 <div id="home_main">
+    <div id="left_side_container">
+        <div>
+            <p class="text_align_start title">¡Reserve ya!</p>
+            <p class="text_align_start subtitle">En los mejores hospedajes</p>
+            <button class="display_block" mat-stroked-button (click)="lodgingsButtonClicked()">Ver todos los alojamientos</button>
+        </div>
+    </div>
     <c-carousel *ngIf="lodgings != null">
         <c-carousel-inner>
             <c-carousel-item *ngFor="let lodging of lodgings">
