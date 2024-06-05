@@ -85,7 +85,7 @@ app-booking, app-error, app-home, app-lodging, app-lodging-info, app-user {
     display: none;
     position: absolute;
     background-color: #f9f9f9;
-    min-width: 160px;
+    min-width: 150px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 }
@@ -101,6 +101,7 @@ app-booking, app-error, app-home, app-lodging, app-lodging-info, app-user {
 
 .dropdown-content a:hover {
     background-color: #ddd;
+    cursor: pointer;
 }
 
 .dropdown:hover .dropdown-content {
