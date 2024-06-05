@@ -1,1 +1,15 @@
-<p>home works!</p>
+<div id="home_main">
+    <c-carousel *ngIf="lodgings != null">
+        <c-carousel-inner>
+            <c-carousel-item *ngFor="let lodging of lodgings">
+                <img class="lodging_image" alt="{{lodging.name}}" loading="lazy" src="{{prependImagesRoute(lodging.image)}}">
+                <c-carousel-caption>
+                    <h3>{{lodging.name}}</h3>
+                    <p>{{lodging.description}}</p>
+                </c-carousel-caption>
+            </c-carousel-item>
+        </c-carousel-inner>
+        <c-carousel-control [routerLink] caption=" " direction="prev"></c-carousel-control>
+        <c-carousel-control [routerLink] caption=" " direction="next"></c-carousel-control>
+    </c-carousel>
+</div>

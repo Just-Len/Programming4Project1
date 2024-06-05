@@ -1,0 +1,26 @@
+c-carousel {
+    width: 40%;
+    object-fit: contain;
+}
+
+c-carousel-caption {
+    background: linear-gradient(#0000, #000E);
+    bottom: 0px;
+    left: 0px;
+    padding-bottom: 0px;
+    right: 0px;
+}
+
+.lodging_image {
+    display: block;
+    object-fit: contain;
+    width: 100%;
+}
+
+#home_main {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+}
