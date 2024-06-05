@@ -48,7 +48,7 @@ export class LodgingComponent implements OnInit {
     isLessor = false;
     isUserLogged!: boolean;
     _filteredLodgings: Lodging[] | null = null;
-    pagedLodgings!: Lodging[];
+    pagedLodgings: Lodging[] = [];
     currentPage = 0;
     pageSize = 10;
     lodgingsDataSource!: MatTableDataSource<Lodging>;

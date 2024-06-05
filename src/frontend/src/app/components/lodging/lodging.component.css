@@ -23,7 +23,6 @@ mat-paginator {
 .button {
     display: block;
     margin: auto;
-    padding: 0.5em 3em;
 }
 
 .buttons_container {
@@ -37,7 +36,6 @@ mat-paginator {
 
 .buttons_container > * {
     flex: 1;
-    padding: 0.5em 3em;
 }
 
 .lodgings_container {

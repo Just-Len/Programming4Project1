@@ -8,6 +8,7 @@ import { Router, RouterLink } from '@angular/router';
 import { server } from '../../services/global';
 import { MatButtonModule } from '@angular/material/button';
 import { AppState } from '../../models/app_state';
+import { UserRole } from '../../models/user';
 
 @Component({
   selector: 'app-home',
@@ -21,9 +22,14 @@ export class HomeComponent implements OnInit
   lodgings: Lodging[] | null = null;
 
   public constructor(
+    private _appState: AppState,
     private _lodgingService: LodgingService,
     private _router: Router
   ) { }
+
+  public get isCustomer() {
+    return this._appState.role == UserRole.Customer;
+  }
 
   prependImagesRoute(lodgingImageFileName: string | null) {
     let imageSrc = "";
