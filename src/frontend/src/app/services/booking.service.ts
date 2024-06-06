@@ -12,4 +12,7 @@ export class BookingService extends BaseService
     public postBooking(booking: Booking): Observable<AppResponse> {
         return this.post("booking", true, booking); 
     } 
+    public getBooking(booking: Booking): Observable<AppResponse>{
+        return this.get("booking", true);
+    }
 }

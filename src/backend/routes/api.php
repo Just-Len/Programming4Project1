@@ -33,6 +33,7 @@ Route::prefix('v1')->group(
         Route::get('/lessor/{lessor_id}/lodging', [LodgingController::class, 'indexLessorLodgings']);
         Route::get('/lodging/{lodging_id}/image', [LodgingController::class, 'getImage']);
         Route::get('/user/{name}/image', [UserController::class, 'getimage']);
+        Route::get('/booking/{customer_id}', [BookingController::class, 'show']);
 
         Route::post('/user/{name}/image', [UserController::class, 'uploadImage'])->middleware(ApiAuthMiddleware::class);
         Route::post('/lodging/{lodging_id}/image', [LodgingController::class, 'uploadImage'])->middleware(LodgingApiAuthMiddleware::class);
@@ -52,5 +53,7 @@ Route::prefix('v1')->group(
         Route::patch('/user/{name}', [UserController::class, 'updatePartial'])->middleware(ApiAuthMiddleware::class);
         Route::put('lodging', [LodgingController::class, 'update'])->middleware(ApiAuthMiddleware::class);
         Route::put('booking', [BookingController::class, 'update'])->middleware(ApiAuthMiddleware::class);
+
+       
     }
 );

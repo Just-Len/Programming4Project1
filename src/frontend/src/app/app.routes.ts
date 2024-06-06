@@ -10,6 +10,7 @@ import { AdministratorGuard } from './services/administrator.guard';
 import { AlreadyLoggedInGuard } from './services/already_logged_in.guard';
 import { LogInGuard } from './services/login.guard';
 import { LodgingInfoComponent } from './components/lodging-info/lodging-info.component';
+import { BookingComponent } from './components/booking/booking.component';
 
 export const routes: Routes = [
     {path: 'lodging', component: LodgingComponent},
@@ -20,6 +21,7 @@ export const routes: Routes = [
     {path: 'home', component: HomeComponent},
     {path: 'user', component: UserComponent, canActivate: [LogInGuard, AdministratorGuard]},
     {path: 'configuration', component:ConfigurationComponent},
+    {path: 'booking', component: BookingComponent},
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     {path: '**', component: ErrorComponent}
 ];

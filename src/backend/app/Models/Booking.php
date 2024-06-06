@@ -22,17 +22,17 @@ class Booking extends Model
 
     public function lodging()
     {
-        return $this->belongsTo(Lodging::class);
+        return $this->belongsTo(Lodging::class, 'lodging_id');
     }
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
     public function bookingStatus()
     {
-        return $this->belongsTo(BookingStatus::class);
+        return $this->belongsTo(BookingStatus::class, 'status_id');
     }
 
     public function payment()

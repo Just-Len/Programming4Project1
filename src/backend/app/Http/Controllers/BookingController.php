@@ -65,21 +65,30 @@ class BookingController
         return $response;
     }
     
-    public function show($id)
+    public function show($customerId)
     {
-        $data = Booking::find($id);
-        if (is_object($data)) {
-            $data = $data->load('lodging');
-            $data = $data->load('customer');
-            $response = JsonResponses::ok(
-                'Datos de la reserva',
-                $data,
-            );
-        } else {
-            $response = JsonResponses::notFound('Recurso no encontrado');
+        $data = Booking::with(['lodging', 'customer', 'bookingStatus'])
+            ->where('customer_id', $customerId)
+            ->get();
+
+        if ($data->isEmpty()) {
+            return JsonResponses::badRequest("No existen reservas");
         }
-        return $response;
+
+        $formattedData = $data->map(function($booking) {
+            return [
+                'booking_id' => $booking->booking_id,
+                'lodging' => $booking->lodging ? $booking->lodging->name : null,
+                'customer' => $booking->customer ? $booking->customer->user_name :null ,
+                'status' => $booking->bookingStatus ? $booking->bookingStatus->type : null,
+                'start_date' => $booking->start_date,
+                'end_date' => $booking->end_date
+            ];
+        });
+
+        return response()->json(['status' => 'ok', 'message' => 'Datos de las reservas', 'data' => $formattedData], 200);
     }
+
 
     
     public function destroy($id = null)
