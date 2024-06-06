@@ -1,8 +1,6 @@
 c-carousel {
-    flex: 3;
     clip-path: rect(0 0 100% 100% round 1em);
-    margin: 2em;
-    object-fit: contain;
+    width: 40em;
 }
 
 c-carousel-caption {
@@ -29,6 +27,14 @@ c-carousel-caption {
     row-gap: 1em;
 }
 
+#right_side_container {
+    align-content: center;
+    display: flex;
+    flex: 3;
+    margin: 2em;
+    justify-content: center;
+}
+
 #left_side_container > div > button {
     margin-top: 1.5em;
 }
@@ -39,7 +45,8 @@ c-carousel-caption {
 
 .lodging_image {
     display: block;
-    object-fit: contain;
+    height: 30em;
+    object-fit: cover;
     width: 100%;
 }
 

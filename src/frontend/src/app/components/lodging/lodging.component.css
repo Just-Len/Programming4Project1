@@ -61,6 +61,7 @@ mat-paginator {
 .lodging_image {
     clip-path: rect(0px 0px 100% 100% round var(--lodging_card_border_radius));
     object-fit: cover;
+    height: 12em;
 }
 
 .lodging_info {
