@@ -11,7 +11,7 @@
         </mat-form-field>
         <mat-form-field class="input">
             <mat-label>Nombre</mat-label>
-            <input type="text" formControlName="first_name" matInput value="{{ user.first_name }}">
+            <input type="text" required="true" formControlName="first_name" matInput value="{{ user.first_name }}">
         </mat-form-field>
         <mat-form-field class="input">
             <mat-label>Apellido</mat-label>
@@ -19,11 +19,8 @@
         </mat-form-field>
         <mat-form-field class="input">  
             <mat-label>Correo</mat-label>
-            <input matInput formControlName="email" [formControl]="email" (blur)="updateErrorMessage()"
+            <input matInput formControlName="email_address"
             type="email" required="true" [value]="user.email_address">
-            @if (email.invalid) {
-                <mat-error>{{errorMessage}}</mat-error>
-            }
         </mat-form-field>
         <mat-form-field class="input">
             <mat-label>Telefono</mat-label>

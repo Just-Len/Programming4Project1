@@ -21,43 +21,31 @@ import Swal from 'sweetalert2';
 })
 export class UserSettingsComponent implements OnInit {
   user!:User;
-  email = new FormControl('', [Validators.required, Validators.email]);
   errorMessage = '';
-  userModifyFormGroup!:FormGroup;
+  userModifyFormGroup:FormGroup = this.buildFormGroup();
 
   public constructor(
     private _userService:UserService,
     private _route:ActivatedRoute,
-    private _notificationService: NotificationService
-  ){
-    merge(this.email.statusChanges, this.email.valueChanges)
-    .pipe(takeUntilDestroyed())
-    .subscribe(() => this.updateErrorMessage())
-  }
-
-  updateErrorMessage(){
-    if(this.email.hasError('required')) {
-      this.errorMessage = 'Debe ingresar un correo';
-    } else if(this.email.hasError('email')) {
-      this.errorMessage = 'Ingrese un correo valido';
-    } else{
-      this.errorMessage = '';
-    }
-  }
+    private _notificationService: NotificationService,
+  ){ }
 
   async ngOnInit() {
     let userName = this._route.snapshot.paramMap.get('name');
     if (userName !== null) {
       this.user = await firstValueFrom(this._userService.getUser(userName));
     }
-    this.email.setValue(this.user.email_address);
+    this.userModifyFormGroup.get<string>("first_name")!.setValue(this.user.first_name);
+    this.userModifyFormGroup.get<string>("last_name")!.setValue(this.user.last_name);
+    this.userModifyFormGroup.get<string>("email_address")!.setValue(this.user.email_address);
+    this.userModifyFormGroup.get<string>("phone_number")!.setValue(this.user.phone_number);
   }
 
   public onSubmitUserSettings(){
     let userName = this._route.snapshot.paramMap.get('name');
     let first_name = this.userModifyFormGroup.get<string>("first_name")!;
     let last_name = this.userModifyFormGroup.get<string>("last_name")!;
-    let email_user = this.userModifyFormGroup.get<string>("email")!;
+    let email_user = this.userModifyFormGroup.get<string>("email_address")!;
     let phone_number = this.userModifyFormGroup.get<string>("phone_number")!;
 
     if(this.userModifyFormGroup.invalid){
@@ -95,7 +83,7 @@ export class UserSettingsComponent implements OnInit {
     }else{
       data[3] = phone_number.value;
     }
-
+    console.log(data);
     this._userService.updateUser(data,userName!).subscribe(
       response => {
         if(AppResponse.success(response)){
@@ -112,5 +100,14 @@ export class UserSettingsComponent implements OnInit {
         }
       }
     )
+  }
+
+  private buildFormGroup() {
+    return new FormGroup({
+      first_name: new FormControl(this.user?.first_name, { nonNullable: true, validators: Validators.required }),
+      last_name: new FormControl(this.user?.last_name, { nonNullable: true, validators: Validators.required }),
+      email_address: new FormControl(this.user?.email_address, { nonNullable: true, validators: Validators.required}),
+      phone_number: new FormControl(this.user?.phone_number, { nonNullable: true, validators: Validators.required }),
+    });
   }
 }

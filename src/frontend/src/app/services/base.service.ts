@@ -95,34 +95,30 @@ export class BaseService {
     }
 
     patch(route: string, requiresToken: boolean, username:string,
-        first_name = '', last_name = '', email_address = '',
-        phone_number = 0
+        first_name = '', last_name = '', email_address = '', phone_number = ''
     ){
         let headers = new HttpHeaders({ 'Content-Type':'application/x-www-form-urlencoded' });
         headers = this.appendTokenIfNeeded(requiresToken,headers);
         
-        let realBody: URLSearchParams[] = []
-        const bodyAux = new URLSearchParams();
-        bodyAux.set("name", JSON.stringify(username));
-        realBody.push(bodyAux);
+        let realBody = new URLSearchParams();
+
+        realBody.set("name", username);
         if(first_name!=''){
-            bodyAux.set("first_name", JSON.stringify(first_name));
-            realBody.push(bodyAux);
+            realBody.set("first_name", first_name);
         }
         if(last_name!=''){
-            bodyAux.set("last_name", JSON.stringify(last_name));
-            realBody.push(bodyAux);
+            realBody.set("last_name", last_name);
         }
         if(email_address!=''){
-            bodyAux.set("email_address", JSON.stringify(email_address));
-            realBody.push(bodyAux);
+            realBody.set("email_address", email_address);
         }
-        if(phone_number!=0){
-            bodyAux.set("phone_number", JSON.stringify(phone_number));
-            realBody.push(bodyAux);
+        if(phone_number!=''){
+            realBody.set("phone_number", JSON.stringify(phone_number));
         }
-
         const options = { headers };
+        console.log(this._http.patch<any>(this.urlAPI + route, realBody, options).pipe(
+            map(this.handleAppResponse),
+            catchError(this.handleError)));
         return this._http.patch<any>(this.urlAPI + route, realBody, options).pipe(
             map(this.handleAppResponse),
             catchError(this.handleError)
@@ -131,9 +127,10 @@ export class BaseService {
 
     private handleAppResponse<T>(response: any) {
         if (AppResponse.success(response as AppResponse)) {
+            console.log(response)
             return response;
         }
-        
+        console.log(response.error);
         return response.error as T;
     }
 
