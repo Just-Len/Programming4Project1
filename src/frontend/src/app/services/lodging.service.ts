@@ -3,13 +3,20 @@ import { Observable, of } from "rxjs";
 import { BaseService } from "./base.service";
 import { Lodging } from "../models/lodging";
 import { AppResponse } from "../models/app_response";
+import { Booking } from "../models/booking";
 
 @Injectable({
     providedIn:'root'
 })
 export class LodgingService extends BaseService
 {
-    _lodgingsById: Map<number, Lodging> = new Map<number, Lodging>();
+    getLodgingBookings(lodgingId: number): Observable<Booking[]> {
+        return this.get(`lodging/${lodgingId}/booking`, true);
+    }
+
+    deleteBookings(bookingIds: number[]): Observable<AppResponse> {
+        return this.delete("booking", true, bookingIds);
+    }
 
     getLessorLodgings(lessorId: number): Observable<Lodging[]> {
         return this.get<Lodging[]>(`lessor/${lessorId}/lodging`, true);

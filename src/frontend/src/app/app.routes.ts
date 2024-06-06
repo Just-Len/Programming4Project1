@@ -11,10 +11,10 @@ import { AlreadyLoggedInGuard } from './services/already_logged_in.guard';
 import { LogInGuard } from './services/login.guard';
 import { LodgingInfoComponent } from './components/lodging-info/lodging-info.component';
 import { UserSettingsComponent } from './components/user-settings/user-settings.component';
-import { MatInputModule } from '@angular/material/input';
+import { BookingComponent } from './components/booking/booking.component';
 
 export const routes: Routes = [
-    {path: 'lodging', component: LodgingComponent, canActivate: [LogInGuard]},
+    {path: 'lodging', component: LodgingComponent},
     {path: 'lodging/create', component: LodgingInfoComponent, canActivate: [LogInGuard]},
     {path: 'lodging/:id', component: LodgingInfoComponent, canActivate: [LogInGuard]},
     {path: 'login', component: LoginComponent, canActivate: [AlreadyLoggedInGuard]},
@@ -23,6 +23,7 @@ export const routes: Routes = [
     {path: 'user/settings/:name', component: UserSettingsComponent, canActivate: [LogInGuard]},
     {path: 'user', component: UserComponent, canActivate: [LogInGuard, AdministratorGuard]},
     {path: 'configuration', component:ConfigurationComponent},
+    {path: 'booking', component: BookingComponent},
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     {path: '**', component: ErrorComponent}
 ];

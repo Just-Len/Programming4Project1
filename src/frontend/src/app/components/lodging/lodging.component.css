@@ -23,7 +23,6 @@ mat-paginator {
 .button {
     display: block;
     margin: auto;
-    padding: 0.5em 3em;
 }
 
 .buttons_container {
@@ -37,7 +36,6 @@ mat-paginator {
 
 .buttons_container > * {
     flex: 1;
-    padding: 0.5em 3em;
 }
 
 .lodgings_container {
@@ -63,6 +61,7 @@ mat-paginator {
 .lodging_image {
     clip-path: rect(0px 0px 100% 100% round var(--lodging_card_border_radius));
     object-fit: cover;
+    height: 12em;
 }
 
 .lodging_info {

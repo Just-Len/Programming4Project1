@@ -65,39 +65,57 @@ class BookingController
         return $response;
     }
     
-    public function show($id)
+    public function show($customerId)
     {
-        $data = Booking::find($id);
-        if (is_object($data)) {
-            $data = $data->load('lodging');
-            $data = $data->load('customer');
-            $response = JsonResponses::ok(
-                'Datos de la reserva',
-                $data,
-            );
-        } else {
-            $response = JsonResponses::notFound('Recurso no encontrado');
+        $data = Booking::with(['lodging', 'customer', 'bookingStatus'])
+            ->where('customer_id', $customerId)
+            ->get();
+
+        if ($data->isEmpty()) {
+            return JsonResponses::badRequest("No existen reservas");
         }
-        return $response;
+
+        $formattedData = $data->map(function($booking) {
+            return [
+                'booking_id' => $booking->booking_id,
+                'lodging' => $booking->lodging ? $booking->lodging->name : null,
+                'customer' => $booking->customer ? $booking->customer->user_name :null ,
+                'status' => $booking->bookingStatus ? $booking->bookingStatus->type : null,
+                'start_date' => $booking->start_date,
+                'end_date' => $booking->end_date
+            ];
+        });
+
+        return JsonResponses::ok('Datos de las reservas', $formattedData);
     }
 
+
     
-    public function destroy($id = null)
+    public function destroy(Request $request)
     {
-        if (isset($id)) {
-            $deleted = Booking::where('booking_id', $id)->delete();
-            if ($deleted) {
-                $response = JsonResponses::ok('Reserva eliminada');
-            } else {
+        $dataRaw = $request->input('data');
+
+        if (isset($dataRaw)) {
+            $data = json_decode($dataRaw, true);
+
+            $deleted = Booking::whereIn('booking_id', $data)->delete();
+            if ($deleted == count($data)) {
+                $response = JsonResponses::ok('Reservas eliminadas.');
+            }
+            else if ($deleted > 0) {
+                $response = JsonResponses::ok('Reservas eliminadas. Algunas de los identificadores especificados no correspondieron a reservas.');
+            }
+            else {
                 $response = JsonResponses::badRequest(
                     'No se pudo eliminar el recurso, compruebe que exista'
                 );
             }
         } else {
             $response = JsonResponses::notAcceptable(
-                'Falta el identificador del recurso a eliminar'
+                'No se encontró el elemento \'data\' en la solicitud.'
             );
         }
+
         return $response;
     }
 

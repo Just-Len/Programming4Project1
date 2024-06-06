@@ -39,6 +39,12 @@ export class BaseService {
         let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
         headers = this.appendTokenIfNeeded(requiresToken, headers);
 
+        if (body != null) {
+            const jsonBody = JSON.stringify(body);
+            body = new URLSearchParams();
+            body.set("data", jsonBody);
+        }
+
         const options = { headers, body };
         return this._http.delete<any>(this.urlAPI + route, options).pipe(
             map(this.handleAppResponse),
@@ -50,7 +56,7 @@ export class BaseService {
         let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
         headers = this.appendTokenIfNeeded(requiresToken, headers);
 
-        const realBody = new URLSearchParams()
+        const realBody = new URLSearchParams();
         realBody.set("data", JSON.stringify(body));
 
         const options = { headers };

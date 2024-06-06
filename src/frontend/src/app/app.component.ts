@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AppState } from './models/app_state';
 import { NotificationComponent } from './components/notification/notification.component';
 import { UserService } from './services/user.service';
+import { UserRole } from './models/user';
 
 @Component({
   selector: 'app-root',
@@ -28,12 +29,16 @@ export class AppComponent {
     });
   }
 
-  public get role() {
-    return this.appState.role;
+  public get isAdmin() {
+    return this.appState.role == UserRole.Administrator;
   }
 
-  public get isLogged() {
-    return this.appState.token !== null;
+  public get isUserLogged() {
+    return this.appState.isUserLogged;
+  }
+
+  public get showNavbar() {
+    return this.router.url !== "/login" && this.router.url !== "/register";
   }
 
   public get userName() {

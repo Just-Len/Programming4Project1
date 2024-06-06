@@ -27,7 +27,7 @@ export class LodgingInfoComponent implements OnInit
   emptyTitle!: string;
   lodgingImageFile!: File | null;
   lodgingImageData: any; 
-  lodgingFormGroup!: FormGroup;
+  lodgingFormGroup: FormGroup = this.buildFormGroup();
   lodging!: Lodging | null;
 
   public constructor(
