@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { server } from "./global";
-import { Observable, catchError, map, of } from "rxjs";
+import { Observable, catchError, last, map, of } from "rxjs";
 import { AppResponse } from "../models/app_response";
 import { AppState } from "../models/app_state";
 
@@ -86,6 +86,41 @@ export class BaseService {
             map(this.handleAppResponse),
             catchError(this.handleError)
         );
+    }
+
+    patch(route: string, requiresToken: boolean, username:string,
+        first_name = '', last_name = '', email_address = '',
+        phone_number = 0
+    ){
+        let headers = new HttpHeaders({ 'Content-Type':'application/x-www-form-urlencoded' });
+        headers = this.appendTokenIfNeeded(requiresToken,headers);
+        
+        let realBody: URLSearchParams[] = []
+        const bodyAux = new URLSearchParams();
+        bodyAux.set("name", JSON.stringify(username));
+        realBody.push(bodyAux);
+        if(first_name!=''){
+            bodyAux.set("first_name", JSON.stringify(first_name));
+            realBody.push(bodyAux);
+        }
+        if(last_name!=''){
+            bodyAux.set("last_name", JSON.stringify(last_name));
+            realBody.push(bodyAux);
+        }
+        if(email_address!=''){
+            bodyAux.set("email_address", JSON.stringify(email_address));
+            realBody.push(bodyAux);
+        }
+        if(phone_number!=0){
+            bodyAux.set("phone_number", JSON.stringify(phone_number));
+            realBody.push(bodyAux);
+        }
+
+        const options = { headers };
+        return this._http.patch<any>(this.urlAPI + route, realBody, options).pipe(
+            map(this.handleAppResponse),
+            catchError(this.handleError)
+        )
     }
 
     private handleAppResponse<T>(response: any) {

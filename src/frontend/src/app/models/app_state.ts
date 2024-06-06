@@ -1,12 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { BaseService } from '../services/base.service';
+import { AppResponse } from './app_response';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AppState
-{
-    public constructor(private router: Router) {}
+{   
+    httpService!:BaseService;
+    public constructor(private router: Router) {
+        
+    }
 
     public get isUserLogged() {
         return this.token !== null;
@@ -55,8 +61,7 @@ export class AppState
         this.token = null;
         this.userName = null;
 
-        this.router.navigate(["/home"]);
-        // TODO: Call log out API route
+        this.router.navigate(["/login"]);
     }
 
     private setOrRemoveFromSessionStorage(name: string, value: any) {

@@ -10,6 +10,8 @@ import { AdministratorGuard } from './services/administrator.guard';
 import { AlreadyLoggedInGuard } from './services/already_logged_in.guard';
 import { LogInGuard } from './services/login.guard';
 import { LodgingInfoComponent } from './components/lodging-info/lodging-info.component';
+import { UserSettingsComponent } from './components/user-settings/user-settings.component';
+import { MatInputModule } from '@angular/material/input';
 
 export const routes: Routes = [
     {path: 'lodging', component: LodgingComponent, canActivate: [LogInGuard]},
@@ -18,6 +20,7 @@ export const routes: Routes = [
     {path: 'login', component: LoginComponent, canActivate: [AlreadyLoggedInGuard]},
     {path: 'register', component: RegisterComponent, canActivate: [AlreadyLoggedInGuard]},
     {path: 'home', component: HomeComponent},
+    {path: 'user/settings/:name', component: UserSettingsComponent, canActivate: [LogInGuard]},
     {path: 'user', component: UserComponent, canActivate: [LogInGuard, AdministratorGuard]},
     {path: 'configuration', component:ConfigurationComponent},
     { path: '', redirectTo: '/login', pathMatch: 'full' },

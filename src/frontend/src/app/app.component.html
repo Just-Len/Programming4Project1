@@ -17,8 +17,8 @@
     <div class="dropdown right">
       <a class="dropbtn"><i class="fas fa-cog"></i> Configuración</a>
       <div class="dropdown-content">
-        <a [routerLink]="['/login']"><i class="fas fa-sign-in-alt"></i> Inicio de Sesion</a>
-        <a [routerLink]="['/register']"><i class="fas fa-user-plus"></i> Registrarse</a>
+        <a (click)="editUser(userName!)"> <i class="fas fa-sign-in-alt"></i> Configuracion </a>
+        <a (click)="logOut()"><i class="fas fa-user-plus"></i> Cerrar Sesion </a>
       </div>
     </div>
   </div>

@@ -1,15 +1,13 @@
 import { HttpHeaders } from "@angular/common/http";
 import { AfterViewInit, Injectable, ViewChild } from "@angular/core";
 import { User } from "../models/user";
-import { Observable, from, map, pipe } from "rxjs";
+import { Observable, from, last, map, pipe } from "rxjs";
 import { BaseService } from "./base.service";
 import { Lessor } from "../models/lessor";
 import { Customer } from "../models/customer";
 import { Administrator } from "../models/administrator";
 import { AppResponse } from "../models/app_response";
-import { MatTableDataSource } from "@angular/material/table";
-import { MatPaginator } from "@angular/material/paginator";
-
+import { AppState } from "../models/app_state";
 
 @Injectable({
     providedIn: 'root'
@@ -19,6 +17,8 @@ export class UserService extends BaseService{
     private lessors!: Lessor[];
     private administrators!: Administrator[];
     private customers!: Customer[];
+    protected override _appState!: AppState;
+
     
     async initializeArray(){
         await Promise.all([this.get<User[]>("user").toPromise(),
@@ -101,5 +101,19 @@ export class UserService extends BaseService{
 
     deleteUser(userName: string): Observable<AppResponse>{
         return this.delete(`user/${userName}`, true, null);
+    }
+
+    updateUser(data:string[], username:string): Observable<AppResponse>{
+        return this.patch(`user/${username}`,true,username,data[0],data[1],data[2],parseInt(data[3]));
+    }
+
+    logOut(){
+        this.post(`user/${this._appState.userName}/logout`,true,'').subscribe((response : AppResponse) => {
+            if(AppResponse.success(response)){
+                console.log('Sesion cerrada con exito');
+            }
+            console.log(response.message);
+        })
+        this._appState.logOut();
     }
 }
