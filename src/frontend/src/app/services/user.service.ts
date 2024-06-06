@@ -1,7 +1,7 @@
 import { HttpHeaders } from "@angular/common/http";
-import { AfterViewInit, Injectable, ViewChild } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { User } from "../models/user";
-import { Observable, from, last, map, pipe } from "rxjs";
+import { Observable, from } from "rxjs";
 import { BaseService } from "./base.service";
 import { Lessor } from "../models/lessor";
 import { Customer } from "../models/customer";
@@ -21,8 +21,12 @@ export class UserService extends BaseService{
 
     
     async initializeArray(){
-        await Promise.all([this.get<User[]>("user").toPromise(),
-            this.get<Lessor[]>("lessor").toPromise(),this.get<Administrator[]>("administrator").toPromise(),this.get<Customer[]>("customer").toPromise()]).then((values) =>{
+        await Promise.all([
+            this.get<User[]>("user").toPromise(),
+            this.get<Lessor[]>("lessor").toPromise(),
+            this.get<Administrator[]>("administrator").toPromise(),
+            this.get<Customer[]>("customer").toPromise()
+        ]).then((values) =>{
                 this.users = values[0] as User[];
                 this.lessors = values[1] as Lessor[];
                 this.administrators = values[2] as Administrator[];
