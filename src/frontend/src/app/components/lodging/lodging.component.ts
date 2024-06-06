@@ -97,6 +97,7 @@ export class LodgingComponent implements OnInit {
         const user = await firstValueFrom(this._userService.getUser(this._appState.userName!));
 
         const booking = new Booking(
+            0,
             this.selectedLodging!.lodging_id,
             user.person_id!,
             BookingStatus.Created,
@@ -172,6 +173,31 @@ export class LodgingComponent implements OnInit {
 
         if (!deleteLodging) {
             return;
+        }
+
+        const lodgingBookings = await firstValueFrom(this._lodgingService.getLodgingBookings(lodgingId));
+
+        if (lodgingBookings.length > 0) {
+            const proceed = await Dialogs.showConfirmDialog(
+                "Acción requerida",
+                "Este alojamiento aún tiene reservas pendientes. Si continua, las reservas serán borradas ¿Desea continuar?");
+            if (proceed) {
+                try {
+                    await firstValueFrom(this._lodgingService.deleteBookings(lodgingBookings.map(booking => booking.booking_id)));
+                }
+                catch (error: any) {
+                    console.log(error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Ha ocurrido un error al eliminar las reservas",
+                        text: error.message
+                    });
+                    return;
+                }
+            }
+            else {
+                return;
+            }
         }
 
         this._lodgingService.deleteLodging(lodgingId).subscribe(

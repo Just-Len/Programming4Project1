@@ -86,7 +86,7 @@ class BookingController
             ];
         });
 
-        return response()->json(['status' => 'ok', 'message' => 'Datos de las reservas', 'data' => $formattedData], 200);
+        return JsonResponses::ok('Datos de las reservas', $formattedData);
     }
 
 
@@ -97,10 +97,9 @@ class BookingController
 
         if (isset($dataRaw)) {
             $data = json_decode($dataRaw, true);
-            $ids = $data['data'];
 
-            $deleted = Booking::whereIn('booking_id', $ids)->delete();
-            if ($deleted == count($ids)) {
+            $deleted = Booking::whereIn('booking_id', $data)->delete();
+            if ($deleted == count($data)) {
                 $response = JsonResponses::ok('Reservas eliminadas.');
             }
             else if ($deleted > 0) {
