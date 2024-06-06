@@ -82,22 +82,32 @@ class BookingController
     }
 
     
-    public function destroy($id = null)
+    public function destroy(Request $request)
     {
-        if (isset($id)) {
-            $deleted = Booking::where('booking_id', $id)->delete();
-            if ($deleted) {
-                $response = JsonResponses::ok('Reserva eliminada');
-            } else {
+        $dataRaw = $request->input('data');
+
+        if (isset($dataRaw)) {
+            $data = json_decode($dataRaw, true);
+            $ids = $data['data'];
+
+            $deleted = Booking::whereIn('booking_id', $ids)->delete();
+            if ($deleted == count($ids)) {
+                $response = JsonResponses::ok('Reservas eliminadas.');
+            }
+            else if ($deleted > 0) {
+                $response = JsonResponses::ok('Reservas eliminadas. Algunas de los identificadores especificados no correspondieron a reservas.');
+            }
+            else {
                 $response = JsonResponses::badRequest(
                     'No se pudo eliminar el recurso, compruebe que exista'
                 );
             }
         } else {
             $response = JsonResponses::notAcceptable(
-                'Falta el identificador del recurso a eliminar'
+                'No se encontró el elemento \'data\' en la solicitud.'
             );
         }
+
         return $response;
     }
 
