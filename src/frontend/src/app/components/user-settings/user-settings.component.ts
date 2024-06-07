@@ -23,6 +23,9 @@ export class UserSettingsComponent implements OnInit {
   user!:User;
   errorMessage = '';
   userModifyFormGroup:FormGroup = this.buildFormGroup();
+  userImageFile!: File | null;
+  userImageData: any;
+  sentImage = false;
 
   public constructor(
     private _userService:UserService,
@@ -42,6 +45,10 @@ export class UserSettingsComponent implements OnInit {
   }
 
   public onSubmitUserSettings(){
+    if(this.sentImage===false){
+      return;
+    }
+
     let userName = this._route.snapshot.paramMap.get('name');
     let first_name = this.userModifyFormGroup.get<string>("first_name")!;
     let last_name = this.userModifyFormGroup.get<string>("last_name")!;
@@ -109,5 +116,46 @@ export class UserSettingsComponent implements OnInit {
       email_address: new FormControl(this.user?.email_address, { nonNullable: true, validators: Validators.required}),
       phone_number: new FormControl(this.user?.phone_number, { nonNullable: true, validators: Validators.required }),
     });
+  }
+
+  onUserImageChanged(event: any) {
+    this.sentImage = true;
+    this.userImageFile = event.target.files[0];
+
+    let reader = new FileReader();
+    reader.onload = e => this.userImageData = reader.result;
+
+    reader.readAsDataURL(this.userImageFile!);
+
+    this.submitUserImage();
+  }
+
+  
+  undoImageChange() {
+    this.userImageFile = null;
+    this.userImageData = null;
+  }
+
+  submitUserImage(){
+    if(this.user != null && this.userImageFile != null) {
+      this._userService.saveUserImage(this.user.name, this.userImageFile).subscribe(
+        response => {
+          if(AppResponse.success(response)) {
+            this.undoImageChange();
+            this.user!.image = response.data;
+            Swal.fire({
+              icon:'success',
+              title:'Se cambio la imagen correctamente'
+            })
+          }else{
+            Swal.fire({
+              icon: "error",
+              title: "Ha ocurrido un error"
+            });
+          }
+        }
+      )
+    }
+    this.sentImage=true;
   }
 }

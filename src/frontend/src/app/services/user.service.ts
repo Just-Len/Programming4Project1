@@ -111,6 +111,10 @@ export class UserService extends BaseService{
         return this.patch(`user/${username}`,true,username,data[0],data[1],data[2],data[3]);
     }
 
+    saveUserImage(username: string, imageFile:File) {
+        return this.postFile(`user/${username}/image`, true, imageFile);
+    }
+
     logOut(){
         this.post(`user/${this._appState.userName}/logout`,true,'').subscribe((response : AppResponse) => {
             if(AppResponse.success(response)){

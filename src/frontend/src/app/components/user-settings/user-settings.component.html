@@ -3,7 +3,8 @@
     <form class="modify-user" #userModifyForm="ngForm" [formGroup]="userModifyFormGroup" (ngSubmit)="onSubmitUserSettings()">
         <div class="image-container">
             <img class="image-user-settings" src="{{ user.image }}">
-            <button class="button-image" mat-stroked-button> Cargar imagen</button>
+            <input #userImageInput hidden="true" type="file" name="file" title="Seleccionar imagen" (change)="onUserImageChanged($event)"/>
+            <button class="button-image" mat-stroked-button (click)="userImageInput.click()"> Cargar imagen </button>
         </div>
         <mat-form-field class="input">
             <mat-label>Usuario</mat-label>
