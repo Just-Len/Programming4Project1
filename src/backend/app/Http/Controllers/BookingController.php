@@ -118,6 +118,19 @@ class BookingController
 
         return $response;
     }
+    public function destroySingle($bookingId)
+    {
+    $booking = Booking::find($bookingId);
+
+    if ($booking) {
+        // Eliminar la reserva
+        $booking->delete();
+        return JsonResponses::ok('Reserva eliminada.');
+    } else {
+        return JsonResponses::badRequest('No se encontró la reserva.');
+    }
+    }
+
 
     public function update(Request $request)
     {

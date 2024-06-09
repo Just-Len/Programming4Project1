@@ -19,7 +19,13 @@ export class BookingService extends BaseService
     public postBooking(booking: Booking): Observable<AppResponse> {
         return this.post("booking", true, booking); 
     } 
-    public getBookingsByPersonId(personId: string): Observable<Booking[]> {
-        return this.get<Booking[]>(`/booking/${personId}`, true);
-      }
+    public getBookingsByPersonId(personId: number): Observable<Booking[]> {
+        return this.get<Booking[]>(`booking/${personId}`, true);
+    }
+    public deleteBookings(bookingIds: number[]): Observable<AppResponse> {
+        return this.delete("booking", true, { data: bookingIds });
+    }
+    public deleteBooking(bookingId: number): Observable<AppResponse>{
+        return this.delete(`booking/${bookingId}`, true, null)
+    }
 }

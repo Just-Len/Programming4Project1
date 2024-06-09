@@ -5,6 +5,7 @@ import { AppState } from './models/app_state';
 import { NotificationComponent } from './components/notification/notification.component';
 import { UserService } from './services/user.service';
 import { UserRole } from './models/user';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-root',

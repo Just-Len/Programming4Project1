@@ -45,6 +45,7 @@ Route::prefix('v1')->group(
         Route::post('/booking', [BookingController::class, 'store'])->middleware(ApiAuthMiddleware::class);
 
         Route::delete('/booking', [BookingController::class, 'destroy'])->middleware(ApiAuthMiddleware::class);
+        Route::delete('/booking/{bookingId}', [BookingController::class, 'destroySingle'])->middleware(ApiAuthMiddleware::class);
         Route::delete('/lodging/{lodging_id}', [LodgingController::class, 'destroy'])->middleware(LodgingApiAuthMiddleware::class);
         Route::delete('/lodging/{lodging_id}/image', [LodgingController::class, 'deleteImage'])->middleware(LodgingApiAuthMiddleware::class);
         Route::delete('/user/{name}', [UserController::class, 'destroy'])->middleware(AdministratorApiAuthMiddleware::class);
