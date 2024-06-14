@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\BookingStatus;
+use App\Models\Lodging;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use App\Utils\JsonResponses;
+use DateTime;
 
 class BookingController
 {
@@ -64,6 +67,56 @@ class BookingController
 
         return $response;
     }
+
+    public function storePayment(Request $request)
+    {
+        $bookingId = $request->route('booking_id');
+        $booking = Booking::find($bookingId);
+
+        if (!$booking) {
+            return JsonResponses::notFound("No existe un alojamiento con el identificador especificado.");
+        }
+
+        $rawData = $request->input('data', null);
+        if ($rawData) {
+            $data = json_decode($rawData, true);
+            $rules = [
+                'date' => 'required|date_format:Y-m-d|after_or_equal:today',
+            ];
+            $validation = validator($data, $rules);
+            if (!$validation->fails()) {
+                $lodging = Lodging::find($booking->lodging_id);
+                $startDate = new DateTime($booking->start_date);
+                $endDate = new DateTime($booking->end_date);
+                $interval = $endDate->diff($startDate);
+                $days = $interval->format("%a");
+
+                $booking->status_id = BookingStatus::CONFIRMED;
+
+                $payment = new Payment();
+                $payment->booking_id= $bookingId;
+                $payment->total_amount= $lodging->per_night_price * $days;
+                $payment->date= $data['date'];
+                
+                $payment->save();
+                $booking->save();
+                $response = JsonResponses::created(
+                    'Pago realizado con éxito.',
+                    $payment
+                );
+            } else {
+                $response = JsonResponses::notAcceptable(
+                    'Datos inválidos',
+                    'errors',
+                    $validation->errors()
+                );
+            }
+        } else {
+            $response = JsonResponses::badRequest('No se encontró el objeto data');
+        }
+
+        return $response;
+    }
     
     public function show($customerId)
     {
@@ -72,7 +125,7 @@ class BookingController
             ->get();
 
         if ($data->isEmpty()) {
-            return JsonResponses::badRequest("No existen reservas");
+            return JsonResponses::ok("No existen reservas", []);
         }
 
         $formattedData = $data->map(function($booking) {
@@ -120,15 +173,15 @@ class BookingController
     }
     public function destroySingle($bookingId)
     {
-    $booking = Booking::find($bookingId);
+        $booking = Booking::find($bookingId);
 
-    if ($booking) {
-        // Eliminar la reserva
-        $booking->delete();
-        return JsonResponses::ok('Reserva eliminada.');
-    } else {
-        return JsonResponses::badRequest('No se encontró la reserva.');
-    }
+        if ($booking) {
+            // Eliminar la reserva
+            $booking->delete();
+            return JsonResponses::ok('Reserva eliminada.');
+        } else {
+            return JsonResponses::badRequest('No se encontró la reserva.');
+        }
     }
 
 

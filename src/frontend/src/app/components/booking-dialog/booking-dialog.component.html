@@ -4,9 +4,9 @@
       <p>¿Qué acción desea realizar?</p>
     </mat-card-content>
     <mat-card-actions class="dialog-actions">
-      <button mat-button class="action-button" (click)="onPay()">Realizar Pago</button>
-      <button mat-button class="action-button cancel-button" (click)="onCancel()">Eliminar Reserva</button>
-      <button mat-button class="action-button close-button" mat-dialog-close>Cerrar</button>
+      <button mat-button (click)="onPay()">Realizar Pago</button>
+      <button mat-button (click)="onCancel()">Eliminar Reserva</button>
+      <button mat-button mat-dialog-close (click)="closeDialog()">Cerrar</button>
     </mat-card-actions>
   </mat-card>
   

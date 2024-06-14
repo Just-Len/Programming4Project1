@@ -32,12 +32,27 @@ class LodgingController
 
     public function indexBooking($id)
     {
-        $bookings = Booking::where('lodging_id', $id)->with('payment')->get();
+        $data = Booking::with(['lodging', 'customer', 'bookingStatus', 'payment'])
+            ->where('lodging_id', $id)
+            ->get();
 
-        return JsonResponses::ok(
-            'Todos los registros de las reservas del alojamiento',
-            $bookings,
-        );
+        if ($data->isEmpty()) {
+            return JsonResponses::ok("No existen reservas", []);
+        }
+
+        $formattedData = $data->map(function($booking) {
+            return [
+                'booking_id' => $booking->booking_id,
+                'lodging' => $booking->lodging ? $booking->lodging->name : null,
+                'customer' => $booking->customer ? $booking->customer->user_name :null ,
+                'status' => $booking->bookingStatus ? $booking->bookingStatus->type : null,
+                'start_date' => $booking->start_date,
+                'end_date' => $booking->end_date,
+                'payment' => $booking->payment
+            ];
+        });
+
+        return JsonResponses::ok('Datos de las reservas', $formattedData);
     }
 
     public function store(Request $request)

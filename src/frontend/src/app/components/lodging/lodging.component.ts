@@ -102,9 +102,13 @@ export class LodgingComponent implements OnInit {
             user.person_id!,
             BookingStatus.Created,
             startDate,
-            endDate);
+            endDate,
+            null,
+            null,
+            null);
+
         const response = await firstValueFrom(this._bookingService.postBooking(booking));
-        
+            
         if (AppResponse.success(response)) {
             Swal.fire({
                 icon: "success",
@@ -148,7 +152,7 @@ export class LodgingComponent implements OnInit {
     }
 
     public filterLodgings(component: LodgingComponent) {
-        this.searchTermCurrentTimeout = null;
+        component.searchTermCurrentTimeout = null;
         if (component.searchTerm != "") {
             const searchTermUppercase = component.searchTerm.toLocaleUpperCase();
             component._filteredLodgings = component._lodgings.filter(lodging => {

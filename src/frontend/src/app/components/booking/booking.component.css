@@ -1,12 +1,26 @@
+:host {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
 
 #booking-container {
-    padding: 20px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     backdrop-filter: blur(15px) brightness(40%);
     color: white;
-    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    min-width: 50vw;
+    max-width: 70vw;
     margin: 0 auto;
+    padding: 20px;
+}
+
+#lessor_lodgings_input {
+    margin: auto;
+    min-width: 50%;
 }
 
 .title {
@@ -15,9 +29,12 @@
     font-weight: bold;
 }
 
+.table_container {
+    flex: 1;
+}
+
 .custom-table {
     width: 100%;
-    border-collapse: collapse;
 }
 
 .header-row {
@@ -40,7 +57,6 @@
 }
 
 .data-cell {
-    padding: 10px;
     border: 1px solid var(--color-accent);
     color: white;
 }

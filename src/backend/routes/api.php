@@ -35,6 +35,7 @@ Route::prefix('v1')->group(
         Route::get('/user/{name}/image', [UserController::class, 'getimage']);
         Route::get('/booking/{customer_id}', [BookingController::class, 'show']);
 
+        Route::post('/booking/{booking_id}/payment', [BookingController::class, 'storePayment'])->middleware(ApiAuthMiddleware::class);
         Route::post('/user/{name}/image', [UserController::class, 'uploadImage'])->middleware(ApiAuthMiddleware::class);
         Route::post('/lodging/{lodging_id}/image', [LodgingController::class, 'uploadImage'])->middleware(LodgingApiAuthMiddleware::class);
         Route::post('/user', [UserController::class, 'store']);

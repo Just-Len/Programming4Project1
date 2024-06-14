@@ -6,7 +6,10 @@ export class Booking
         public customer_id: number,
         public status_id: number,
         public start_date: string,
-        public end_date: string
+        public end_date: string,
+        public status: string | null,
+        public customer: string | null,
+        public payment: any
     ) { }
 }
 
